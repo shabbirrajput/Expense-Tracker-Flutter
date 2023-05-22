@@ -23,6 +23,7 @@ class AppString {
   static const textEnterConfirmPassword = 'Enter Confirm Password';
   static const textMonth = 'Month';
   static const textYear = 'Year';
+  static const textSelectMonth = 'Select Month';
   static const textJanuary = 'January';
   static const textFebruary = 'February';
   static const textMarch = 'March';

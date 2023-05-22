@@ -12,6 +12,12 @@ class ScreenDashboard extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => false,
       child: MaterialApp(
+        theme: ThemeData(
+          brightness: Brightness.light,
+          tabBarTheme: const TabBarTheme(
+              indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(color: AppColors.colorWhite))),
+        ),
         home: DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -41,18 +47,3 @@ class ScreenDashboard extends StatelessWidget {
     );
   }
 }
-
-/// Scaffold(
-//           appBar: AppBar(
-//             title: const Text(
-//               AppString.textDashboard,
-//               style: TextStyle(fontWeight: FontWeight.w500),
-//             ),
-//             backgroundColor: AppColors.colorPrimary,
-//             automaticallyImplyLeading: false,
-//           ),
-//           body: SingleChildScrollView(
-//             child: Column(
-//               children: [Text('data')],
-//             ),
-//           )),

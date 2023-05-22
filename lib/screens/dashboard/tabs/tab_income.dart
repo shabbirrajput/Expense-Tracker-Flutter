@@ -1,3 +1,8 @@
+import 'package:expense_tracker/core/app_color.dart';
+import 'package:expense_tracker/core/app_dimens.dart';
+import 'package:expense_tracker/core/app_string.dart';
+import 'package:expense_tracker/core/month_list.dart';
+import 'package:expense_tracker/screens/dashboard/tabs/widget/tab_income_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class TabIncome extends StatefulWidget {
@@ -8,11 +13,81 @@ class TabIncome extends StatefulWidget {
 }
 
 class _TabIncomeState extends State<TabIncome> {
+  String dropDownValue = AppString.textJanuary;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [Text('dataINCOME')],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Dimens.margin16),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: Dimens.margin10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DropdownButton(
+                value: dropDownValue.isNotEmpty ? dropDownValue : null,
+                icon: const Icon(Icons.arrow_drop_down),
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(items),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropDownValue = newValue!;
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: Dimens.margin10,
+          ),
+          Expanded(
+            child: ListView.builder(
+                /*shrinkWrap: true,*/
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return const Text(
+                    AppString.textIncome,
+                    style: TextStyle(color: AppColors.colorBlack),
+                  );
+                }),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(Dimens.margin18),
+              child: ElevatedButton(
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AddProductSheet(
+                        onProductAdd: () {
+                          /*initData();*/
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(Dimens.margin20),
+                  backgroundColor: AppColors.colorPrimary,
+                  foregroundColor: AppColors.colorWhite,
+                ),
+                child: const Icon(Icons.add, color: AppColors.colorWhite),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
