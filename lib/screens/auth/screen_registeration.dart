@@ -1,6 +1,7 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
+import 'package:expense_tracker/core/utils/utils.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -14,11 +15,39 @@ class ScreenRegisteration extends StatefulWidget {
 }
 
 class _ScreenRegisterationState extends State<ScreenRegisteration> {
-  final _formkey = GlobalKey<FormState>();
+  bool loading = false;
+  final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  void signUp() {
+    setState(() {
+      loading = true;
+    });
+    _auth
+        .createUserWithEmailAndPassword(
+            email: emailController.text.toString(),
+            password: passwordController.text.toString())
+        .then((value) {
+      setState(() {
+        loading = false;
+      });
+    }).onError((error, stackTrace) {
+      Utils().toastMessage(error.toString());
+      setState(() {
+        loading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +67,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Dimens.margin30),
           child: Form(
-            key: _formkey,
+            key: _formKey,
             child: Column(
               children: [
                 const SizedBox(
@@ -82,8 +111,8 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                 const SizedBox(
                   height: Dimens.margin7,
                 ),
-                const TextField(
-                  decoration: InputDecoration(
+                TextFormField(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                     ),
@@ -108,7 +137,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                 const SizedBox(
                   height: Dimens.margin7,
                 ),
-                TextField(
+                TextFormField(
                   controller: emailController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -135,7 +164,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                 const SizedBox(
                   height: Dimens.margin7,
                 ),
-                TextField(
+                TextFormField(
                   controller: passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
@@ -163,9 +192,9 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                 const SizedBox(
                   height: Dimens.margin7,
                 ),
-                const TextField(
+                TextFormField(
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                     ),
@@ -173,6 +202,12 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                     hintText: AppString.textEnterPassword,
                     /*fillColor: Colors.white70*/
                   ),
+                  /* validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Enter password';
+                    }
+                    return null;
+                  },*/
                 ),
                 const SizedBox(
                   height: Dimens.margin67,
@@ -182,28 +217,31 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (_formkey.currentState!.validate()) {
-                        _auth.createUserWithEmailAndPassword(
-                            email: emailController.text.toString(),
-                            password: passwordController.text.toString());
+                      if (_formKey.currentState!.validate()) {
+                        signUp();
                       }
-                      Navigator.push(
+                      /*Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const ScreenLogin()),
-                      );
+                      );*/
                     },
                     style: ElevatedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.zero)),
                         backgroundColor: AppColors.colorPrimary),
-                    child: const Text(
-                      AppString.textCreateAnAccount,
-                      style: TextStyle(
-                          color: AppColors.colorWhite,
-                          fontSize: Dimens.textSize15,
-                          fontWeight: FontWeight.w700),
-                    ),
+                    child: loading
+                        ? const CircularProgressIndicator(
+                            strokeWidth: 3,
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            AppString.textCreateAnAccount,
+                            style: TextStyle(
+                                color: AppColors.colorWhite,
+                                fontSize: Dimens.textSize15,
+                                fontWeight: FontWeight.w700),
+                          ),
                   ),
                 ),
                 const SizedBox(
