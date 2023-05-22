@@ -1,19 +1,7 @@
 class AppString {
-  static const textDripsWater = 'Drips Water';
-  static const textWeProvideBestQualityWater = 'We provide best quality water';
-  static const textDescriptionLoremIpsum =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed ';
-  static const textScheduleWhenYouWantYourWaterDelivered =
-      'Schedule when you want your water delivered';
-  static const textFastAndResponsibilyDelivery =
-      'Fast and responsibily delivery';
-  static const textNext = 'Next';
-  static const textGetStarted = 'Get Started';
-  static const textWelcomeToDripsWater = 'Welcome to Drips water';
-  static const textWaterDeliveryApp = 'Water Delivery app';
+  static const textDashboard = 'Dashboard';
   static const textCreateAnAccount = 'CREATE AN ACCOUNT';
   static const textLogin = 'LOGIN';
-  static const textContinueAsGuest = 'Continue as Guest';
   static const textWelcomeBack = 'Welcome Back!';
   static const textPleaseFillInYourEmailPasswordToLoginToYourAccount =
       'Please fill in your email password to login to your account.';
@@ -33,10 +21,20 @@ class AppString {
   static const textEnterName = 'Enter Name';
   static const textConfirmPassword = 'Confirm Password';
   static const textEnterConfirmPassword = 'Enter Confirm Password';
-  static const textMrProduct = 'Mr Product!';
-  static const textSearchSomething = 'Search Something....';
-  static const textHome = 'Home';
-  static const textCart = 'Cart';
-  static const textFavourite = 'Favourite';
-  static const textAccount = 'Account';
+  static const textMonth = 'Month';
+  static const textYear = 'Year';
+  static const textJanuary = 'January';
+  static const textFebruary = 'February';
+  static const textMarch = 'March';
+  static const textApril = 'April';
+  static const textMay = 'May';
+  static const textJune = 'June';
+  static const textJuly = 'July';
+  static const textAugust = 'August';
+  static const textSeptember = 'September';
+  static const textOctober = 'October';
+  static const textNovember = 'November';
+  static const textDecember = 'December';
+  static const textIncome = 'Income';
+  static const textExpense = 'Expense';
 }

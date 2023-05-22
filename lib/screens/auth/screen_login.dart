@@ -39,7 +39,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
             email: emailController.text.toString(),
             password: passwordController.text.toString())
         .then((value) {
-      Utils().toastMessage(value.user!.email.toString());
+      Utils().alertDialog(value.user!.email.toString());
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => const ScreenDashboard()));
       setState(() {
@@ -47,30 +47,12 @@ class _ScreenLoginState extends State<ScreenLogin> {
       });
     }).onError((error, stackTrace) {
       debugPrint(error.toString());
-      Utils().toastMessage(error.toString());
+      Utils().alertDialog(error.toString());
       setState(() {
         loading = false;
       });
     });
   }
-
-/*  static Future<User?> loginUsingEmailPassword(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user;
-    try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      user = userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
-        print('No user found for that email');
-      }
-    }
-    return user;
-  }*/
 
   @override
   Widget build(BuildContext context) {
