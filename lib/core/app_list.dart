@@ -19,3 +19,9 @@ var itemSelectTypeList = [
   AppString.textIncome,
   AppString.textExpense,
 ];
+
+var itemSelectStatusList = [
+  AppString.textClear,
+  AppString.textUnderProcess,
+  AppString.textReject,
+];

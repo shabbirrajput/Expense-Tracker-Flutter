@@ -1,7 +1,7 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
-import 'package:expense_tracker/core/month_list.dart';
+import 'package:expense_tracker/core/app_list.dart';
 import 'package:flutter/material.dart';
 
 class ScreenAddData extends StatefulWidget {
@@ -14,14 +14,14 @@ class ScreenAddData extends StatefulWidget {
 }
 
 class _ScreenAddDataState extends State<ScreenAddData> {
-  final TextEditingController productNameController = TextEditingController();
-  final TextEditingController productPriceController = TextEditingController();
-  final TextEditingController productQtyController = TextEditingController();
-  final TextEditingController productImageController = TextEditingController();
-  final TextEditingController productDescController = TextEditingController();
-  /*var dbHelper;*/
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
+  final TextEditingController typeController = TextEditingController();
+  final TextEditingController categoryController = TextEditingController();
+  final TextEditingController statusController = TextEditingController();
+  final TextEditingController paymentController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+  /*var dbHelper;*/
 
   ///Select Date
   DateTime selectedDate = DateTime.now();
@@ -98,7 +98,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     });
   }
 
-  String dropDownValue = '';
+  String newCategoryName = '';
+
+  String dropDownValueType = '';
+  String dropDownValueStatus = '';
   @override
   void initState() {
     super.initState();
@@ -117,21 +120,20 @@ class _ScreenAddDataState extends State<ScreenAddData> {
         ),
         backgroundColor: AppColors.colorPrimary,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(
-              height: Dimens.margin24,
-            ),
-            const SizedBox(
-              height: Dimens.margin24,
-            ),
-            SizedBox(
-              height: Dimens.margin72,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimens.margin20),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Dimens.margin20),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(
+                height: Dimens.margin24,
+              ),
+              const SizedBox(
+                height: Dimens.margin24,
+              ),
+              SizedBox(
+                height: Dimens.margin72,
                 child: InkWell(
                   onTap: () => _selectDate(context),
                   child: TextFormField(
@@ -155,12 +157,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: Dimens.margin72,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimens.margin20),
+              SizedBox(
+                height: Dimens.margin72,
                 child: InkWell(
                   onTap: () => _selectTime(context),
                   child: TextFormField(
@@ -184,132 +182,282 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: Dimens.margin72,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-                child: DropdownButton(
-                  value: dropDownValue.isNotEmpty ? dropDownValue : null,
-                  icon: const Icon(Icons.arrow_drop_down),
-                  hint: const Text(AppString.textSelectType),
-                  items: itemSelectTypeList.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
+              FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.colorWhite2,
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(
+                          color: AppColors.colorGrey,
+                          fontWeight: FontWeight.w500),
+                      prefixIcon: Icon(
+                        Icons.select_all,
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
+                    // isEmpty: dropDownValueType == '',
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: dropDownValueType.isNotEmpty
+                            ? dropDownValueType
+                            : null,
+                        hint: const Text(AppString.textSelectType),
+                        isDense: true,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownValueType = newValue!;
+                            state.didChange(newValue);
+                          });
+                        },
+                        items: itemSelectTypeList.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: Dimens.margin18,
+              ),
+              SizedBox(
+                height: Dimens.margin72,
+                child: InkWell(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: Dimens.margin600,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: 9,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          crossAxisSpacing: 4.0,
+                                          mainAxisSpacing: 4.0),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Column(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                                Icons.local_pizza_outlined)),
+                                        const Text('Pizza'),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      if (newCategoryName.isNotEmpty) {
+                                        setState(() {
+                                          categories.add(newCategoryName);
+                                        });
+                                      }
+                                    },
+                                    icon: const Icon(Icons.add))
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropDownValue = newValue!;
-                    });
                   },
-                ),
-              ),
-            ),
-            SizedBox(
-              height: Dimens.margin72,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-                child: TextFormField(
-                  controller: productImageController,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: "AppString.textAddImage",
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500)),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: Dimens.margin72,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-                child: TextFormField(
-                  controller: productDescController,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: "AppString.textDesc",
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500)),
-                ),
-              ),
-            ),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "AppString.textSelectCategoryType",
-                  style: TextStyle(
-                    color: AppColors.colorPrimary,
-                    /*fontWeight: FontWeight.w500*/
-                  ),
-                ),
-                /*SizedBox(
-                  height: Dimens.margin50,
-                  width: Dimens.margin100,
-                  child: DropdownButton<Category>(
-                    // Step 3.
-                    value: selectCategory,
-                    isExpanded: true,
-                    // Step 4.
-                    items: catList
-                        .map<DropdownMenuItem<Category>>((Category value) {
-                      return DropdownMenuItem<Category>(
-                        value: value,
-                        child: Text(
-                          value.name!,
-                          style: const TextStyle(
-                              color: AppColors.colorBlack,
-                              fontSize: Dimens.margin20),
-                        ),
-                      );
-                    }).toList(),
-                    // Step 5.
-                    onChanged: (Category? newValue) {
+                  child: TextFormField(
+                    onChanged: (value) {
                       setState(() {
-                        selectCategory = newValue!;
+                        newCategoryName = value;
                       });
                     },
+                    enabled: false,
+                    controller: categoryController,
+                    keyboardType: TextInputType.multiline,
+                    style: const TextStyle(color: AppColors.colorBlack),
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.colorWhite2,
+                      border: InputBorder.none,
+                      hintText: AppString.textSelectCategory,
+                      hintStyle: TextStyle(
+                          color: AppColors.colorGrey,
+                          fontWeight: FontWeight.w500),
+                      prefixIcon: Icon(
+                        Icons.category_outlined,
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
                   ),
-                ),*/
-              ],
-            ),
-
-            /* const SizedBox(
-                                height: Dimens.margin72,
-                                child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Dimens.margin20),
-                                    child: Text(
-                                      AppString.textSelectCategoryType,
-                                      style: TextStyle(
-                                          color: AppColors.colorPrimary,
-                                          fontSize: Dimens.margin16,
-
-                                          fontWeight: FontWeight.w500),
-                                    )),
-                              ),*/
-            const SizedBox(
-              height: Dimens.margin18,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-              child: Row(
+                ),
+              ),
+              SizedBox(
+                height: Dimens.margin72,
+                child: InkWell(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: Dimens.margin600,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: 9,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          crossAxisSpacing: 4.0,
+                                          mainAxisSpacing: 4.0),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Column(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                                Icons.payment_outlined)),
+                                        const Text('Card'),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      if (newCategoryName.isNotEmpty) {
+                                        setState(() {
+                                          categories.add(newCategoryName);
+                                        });
+                                      }
+                                    },
+                                    icon: const Icon(Icons.add))
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: TextFormField(
+                    enabled: false,
+                    controller: paymentController,
+                    keyboardType: TextInputType.multiline,
+                    style: const TextStyle(color: AppColors.colorBlack),
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.colorWhite2,
+                      border: InputBorder.none,
+                      hintText: AppString.textSelectPaymentMethod,
+                      hintStyle: TextStyle(
+                          color: AppColors.colorGrey,
+                          fontWeight: FontWeight.w500),
+                      prefixIcon: Icon(
+                        Icons.payment_outlined,
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              FormField<String>(
+                builder: (FormFieldState<String> state) {
+                  return InputDecorator(
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.colorWhite2,
+                      border: InputBorder.none,
+                      hintText: AppString.textSelectCategory,
+                      hintStyle: TextStyle(
+                          color: AppColors.colorGrey,
+                          fontWeight: FontWeight.w500),
+                      prefixIcon: Icon(
+                        Icons.auto_graph_outlined,
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
+                    // isEmpty: dropDownValueType == '',
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: dropDownValueStatus.isNotEmpty
+                            ? dropDownValueStatus
+                            : null,
+                        hint: const Text(AppString.textSelectStatus),
+                        isDense: true,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropDownValueStatus = newValue!;
+                            state.didChange(newValue);
+                          });
+                        },
+                        items: itemSelectStatusList.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              /*DropdownButton(
+                value:
+                    dropDownValueStatus.isNotEmpty ? dropDownValueStatus : null,
+                icon: const Icon(Icons.arrow_drop_down),
+                hint: const Text(AppString.textSelectStatus),
+                items: itemSelectStatusList.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(items),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropDownValueStatus = newValue!;
+                  });
+                },
+              ),*/
+              const SizedBox(
+                height: Dimens.margin18,
+              ),
+              TextFormField(
+                controller: noteController,
+                keyboardType: TextInputType.multiline,
+                minLines: Dimens.margin2.toInt(),
+                maxLines: Dimens.margin5.toInt(),
+                style: const TextStyle(color: AppColors.colorBlack),
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: AppColors.colorWhite2,
+                  border: InputBorder.none,
+                  hintText: AppString.textNote,
+                  hintStyle: TextStyle(
+                      color: AppColors.colorGrey, fontWeight: FontWeight.w500),
+                  prefixIcon: Icon(
+                    Icons.note_add_outlined,
+                    color: AppColors.colorPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: Dimens.margin18,
+              ),
+              Row(
                 children: [
                   SizedBox(
                     height: Dimens.margin46,
@@ -354,8 +502,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -44,4 +44,11 @@ class AppString {
   static const textSelectType = 'Select Type';
   static const textAdd = 'Add';
   static const textCancel = 'Cancel';
+  static const textSelectCategory = 'Select Category';
+  static const textSelectPaymentMethod = 'Select Payment Method';
+  static const textSelectStatus = 'Select Status';
+  static const textClear = 'Clear';
+  static const textUnderProcess = 'Under Process';
+  static const textReject = 'Reject';
+  static const textNote = 'Note';
 }

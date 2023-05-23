@@ -1,7 +1,7 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
-import 'package:expense_tracker/core/month_list.dart';
+import 'package:expense_tracker/core/app_list.dart';
 import 'package:expense_tracker/screens/dashboard/tabs/widget/screen_add_data.dart';
 import 'package:flutter/material.dart';
 
