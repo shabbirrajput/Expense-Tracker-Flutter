@@ -1,5 +1,6 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
+import 'package:expense_tracker/core/app_string.dart';
 import 'package:flutter/material.dart';
 
 class AddProductSheet extends StatefulWidget {
@@ -18,7 +19,75 @@ class _AddProductSheetState extends State<AddProductSheet> {
   final TextEditingController productQtyController = TextEditingController();
   final TextEditingController productImageController = TextEditingController();
   final TextEditingController productDescController = TextEditingController();
-  var dbHelper;
+  /*var dbHelper;*/
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController timeController = TextEditingController();
+
+  ///Select Date
+  DateTime selectedDate = DateTime.now();
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1901, 1),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.colorPrimary, // header background color
+              onPrimary: AppColors.colorBlack, // header text color
+              onSurface: AppColors.colorGrey, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.colorPrimary, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        dateController.value = TextEditingValue(text: picked.toString());
+      });
+    }
+  }
+
+  ///Select Time
+  TimeOfDay _timeOfDay = TimeOfDay.now();
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _timeOfDay,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.colorPrimary, // header background color
+              onPrimary: AppColors.colorBlack, // header text color
+              onSurface: AppColors.colorGrey, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.colorPrimary, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _timeOfDay) {
+      setState(() {
+        _timeOfDay = picked;
+        timeController.value = TextEditingValue(text: picked.toString());
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -48,7 +117,7 @@ class _AddProductSheetState extends State<AddProductSheet> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Text(
-                        "AppString.textAddProducts",
+                        AppString.textAddIncomeOrExpense,
                         style: TextStyle(
                           color: AppColors.colorBlack,
                           fontSize: Dimens.margin20,
@@ -77,18 +146,27 @@ class _AddProductSheetState extends State<AddProductSheet> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-                child: TextFormField(
-                  controller: productNameController,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
+                child: InkWell(
+                  onTap: () => _selectDate(context),
+                  child: TextFormField(
+                    enabled: false,
+                    controller: dateController,
+                    keyboardType: TextInputType.datetime,
+                    style: const TextStyle(color: AppColors.colorBlack),
+                    decoration: const InputDecoration(
                       filled: true,
                       fillColor: AppColors.colorWhite2,
                       border: InputBorder.none,
-                      hintText: "AppString.textAddName",
+                      hintText: AppString.textSelectDate,
                       hintStyle: TextStyle(
                           color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500)),
+                          fontWeight: FontWeight.w500),
+                      prefixIcon: Icon(
+                        Icons.calendar_month_outlined,
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -97,18 +175,37 @@ class _AddProductSheetState extends State<AddProductSheet> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-                child: TextFormField(
-                  controller: productPriceController,
-                  keyboardType: TextInputType.number,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
+                child: InkWell(
+                  onTap: () => _selectTime(context),
+                  /*{
+                    showTimePicker(
+                      context: context,
+                      initialTime: _timeOfDay,
+                    ).then((timeOfDay) {
+                      setState(() {
+                        _timeOfDay = timeOfDay!;
+                      });
+                    });
+                  },*/
+                  child: TextFormField(
+                    enabled: false,
+                    controller: timeController,
+                    keyboardType: TextInputType.datetime,
+                    style: const TextStyle(color: AppColors.colorBlack),
+                    decoration: const InputDecoration(
                       filled: true,
                       fillColor: AppColors.colorWhite2,
                       border: InputBorder.none,
-                      hintText: "AppString.textAddPrice",
+                      hintText: AppString.textSelectTime,
                       hintStyle: TextStyle(
                           color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500)),
+                          fontWeight: FontWeight.w500),
+                      prefixIcon: Icon(
+                        Icons.watch_later_outlined,
+                        color: AppColors.colorPrimary,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
