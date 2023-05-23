@@ -1,12 +1,18 @@
 import 'package:expense_tracker/core/app_color.dart';
+import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/core/utils/utils.dart';
+import 'package:expense_tracker/db/comHelper.dart';
+import 'package:expense_tracker/db/db_helper.dart';
+import 'package:expense_tracker/db/models/user_model.dart';
+import 'package:expense_tracker/db/navigator_key.dart';
 import 'package:expense_tracker/screens/auth/screen_registeration.dart';
 import 'package:expense_tracker/screens/dashboard/screen_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenLogin extends StatefulWidget {
   const ScreenLogin({Key? key}) : super(key: key);
@@ -18,19 +24,29 @@ class ScreenLogin extends StatefulWidget {
 class _ScreenLoginState extends State<ScreenLogin> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
+
+  final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  var dbHelper;
 
   @override
+  void initState() {
+    super.initState();
+    dbHelper = DbHelper();
+  }
+
+/*  @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
-  }
+  }*/
 
-  void login() {
+  login() async {
     setState(() {
       loading = true;
     });
@@ -52,6 +68,45 @@ class _ScreenLoginState extends State<ScreenLogin> {
         loading = false;
       });
     });
+
+    String email = emailController.text;
+    String passwd = passwordController.text;
+
+    if (email.isEmpty) {
+      alertDialog("Please Enter Email ID");
+    } else if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      alertDialog("Invalid Email");
+    } else if (passwd.isEmpty) {
+      alertDialog("Please Enter Password");
+    } else if (!RegExp(r'(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)')
+        .hasMatch(passwd)) {
+      alertDialog(
+          "Please Enter Strong Password\n\nHint : Password must contain Upper/Lower case, number and special character");
+    } else {
+      await dbHelper.getLoginUser(email, passwd).then((userData) {
+        if (userData != null && userData.email != null) {
+          setSP(userData).whenComplete(() {
+            Navigator.pushAndRemoveUntil(
+                NavigatorKey.navigatorKey.currentContext!,
+                MaterialPageRoute(builder: (_) => const ScreenDashboard()),
+                (Route<dynamic> route) => false);
+          });
+        } else {
+          alertDialog("Error: User Not Found");
+        }
+      }).catchError((error) {
+        alertDialog("Error: Login Fail");
+      });
+    }
+  }
+
+  Future setSP(UserModel user) async {
+    final SharedPreferences sp = await _pref;
+
+    sp.setInt(AppConfig.textUserId, user.id!);
+    sp.setString("name", user.name!);
+    sp.setString("email", user.email!);
+    sp.setString("password", user.password!);
   }
 
   @override
@@ -60,7 +115,10 @@ class _ScreenLoginState extends State<ScreenLogin> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ScreenRegisteration()));
             },
             icon: const Icon(
               Icons.arrow_back,

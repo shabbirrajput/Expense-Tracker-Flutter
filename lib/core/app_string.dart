@@ -14,13 +14,13 @@ class AppString {
   static const textSignIn = ' Sign in';
   static const textEnterEmail = 'Enter Email';
   static const textEnterPassword = 'Enter Password';
+  static const textEnterConfirmPassword = 'Enter Confirm Password';
   static const textCreateYourAccount = 'Create your Account';
   static const textPleaseFillInYourEmailPasswordToCreateYourAccount =
       'Please fill in your details to create your account';
   static const textName = 'Name';
   static const textEnterName = 'Enter Name';
   static const textConfirmPassword = 'Confirm Password';
-  static const textEnterConfirmPassword = 'Enter Confirm Password';
   static const textMonth = 'Month';
   static const textYear = 'Year';
   static const textSelectMonth = 'Select Month';
@@ -51,4 +51,6 @@ class AppString {
   static const textUnderProcess = 'Under Process';
   static const textReject = 'Reject';
   static const textNote = 'Note';
+  static const textHistory = 'History';
+  static const textLogout = 'Logout';
 }

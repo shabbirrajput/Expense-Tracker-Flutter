@@ -1,7 +1,9 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
-import 'package:expense_tracker/core/utils/utils.dart';
+import 'package:expense_tracker/db/comHelper.dart';
+import 'package:expense_tracker/db/db_helper.dart';
+import 'package:expense_tracker/db/models/user_model.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -17,10 +19,19 @@ class ScreenRegisteration extends StatefulWidget {
 class _ScreenRegisterationState extends State<ScreenRegisteration> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  var dbHelper;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DbHelper();
+  }
 
   @override
   void dispose() {
@@ -29,7 +40,9 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
     passwordController.dispose();
   }
 
-  void signUp() {
+  void signUpWithFirebase() {}
+
+  signUp() async {
     setState(() {
       loading = true;
     });
@@ -42,26 +55,67 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
         loading = false;
       });
     }).onError((error, stackTrace) {
-      Utils().toastMessage(error.toString());
+      /*Utils().alertDialog(error.toString());*/
       setState(() {
         loading = false;
       });
     });
+
+    String name = nameController.text;
+    String email = emailController.text;
+    String passwd = passwordController.text;
+    String cPasswd = confirmPasswordController.text;
+
+    bool isExist = false;
+/*    if (email.isNotEmpty) {
+      await dbHelper.getCheckEmailUser(email).then((userData) {
+        if (userData != null && userData.email != null) {
+          isExist = true;
+        }
+      });
+    }*/
+    if (name.isEmpty) {
+      alertDialog("Please Enter Name");
+    } else if (email.isEmpty) {
+      alertDialog("Please Enter Email");
+    } else if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      alertDialog("Invalid Email");
+    } else if (isExist) {
+      alertDialog("This Email ID Is Already Exist. Please Enter New Email");
+    } else if (passwd.isEmpty) {
+      alertDialog("Please Enter Password");
+    } else if (!RegExp(r'(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)')
+        .hasMatch(passwd)) {
+      alertDialog(
+          "Please Enter Strong Password\n\nHint : Password must contain Upper/Lower case, number and special character");
+    } else if (cPasswd.isEmpty) {
+      alertDialog("Please Enter Confirm Password");
+    } else if (passwd != cPasswd) {
+      alertDialog('Password Mismatch');
+    } else {
+      UserModel uModel = UserModel();
+
+      uModel.name = name;
+      uModel.email = email;
+      uModel.password = passwd;
+      dbHelper = DbHelper();
+      await dbHelper.saveData(uModel).then((userData) {
+        alertDialog("Successfully Saved");
+        print('Data Saved');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const ScreenLogin()));
+      }).catchError((error) {
+        print('Data NOT Saved');
+        alertDialog("Error: Data Save Fail--$error");
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.colorPrimary,
-              size: Dimens.margin30,
-            )),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -112,6 +166,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                   height: Dimens.margin7,
                 ),
                 TextFormField(
+                  controller: nameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
@@ -193,13 +248,14 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
                   height: Dimens.margin7,
                 ),
                 TextFormField(
+                  controller: confirmPasswordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                     ),
                     hintStyle: TextStyle(color: Colors.grey),
-                    hintText: AppString.textEnterPassword,
+                    hintText: AppString.textEnterConfirmPassword,
                     /*fillColor: Colors.white70*/
                   ),
                   /* validator: (value) {
