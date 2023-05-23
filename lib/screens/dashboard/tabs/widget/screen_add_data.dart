@@ -1,19 +1,19 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
+import 'package:expense_tracker/core/month_list.dart';
 import 'package:flutter/material.dart';
 
-class AddProductSheet extends StatefulWidget {
+class ScreenAddData extends StatefulWidget {
   final Function onProductAdd;
 
-  const AddProductSheet({Key? key, required this.onProductAdd})
-      : super(key: key);
+  const ScreenAddData({Key? key, required this.onProductAdd}) : super(key: key);
 
   @override
-  State<AddProductSheet> createState() => _AddProductSheetState();
+  State<ScreenAddData> createState() => _ScreenAddDataState();
 }
 
-class _AddProductSheetState extends State<AddProductSheet> {
+class _ScreenAddDataState extends State<ScreenAddData> {
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController productPriceController = TextEditingController();
   final TextEditingController productQtyController = TextEditingController();
@@ -89,6 +89,16 @@ class _AddProductSheetState extends State<AddProductSheet> {
     }
   }
 
+  ///Add Category
+  List<String> categories = [];
+
+  void addCategory() {
+    setState(() {
+      categories.add('New Category');
+    });
+  }
+
+  String dropDownValue = '';
   @override
   void initState() {
     super.initState();
@@ -99,44 +109,20 @@ class _AddProductSheetState extends State<AddProductSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Dimens.margin600,
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          AppString.textAddIncomeOrExpense,
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
+        backgroundColor: AppColors.colorPrimary,
+      ),
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const SizedBox(
               height: Dimens.margin24,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: Dimens.margin16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Expanded(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: Text(
-                        AppString.textAddIncomeOrExpense,
-                        style: TextStyle(
-                          color: AppColors.colorBlack,
-                          fontSize: Dimens.margin20,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.cancel_outlined,
-                      color: AppColors.colorPrimary,
-                    ),
-                  ),
-                ],
-              ),
             ),
             const SizedBox(
               height: Dimens.margin24,
@@ -177,16 +163,6 @@ class _AddProductSheetState extends State<AddProductSheet> {
                     const EdgeInsets.symmetric(horizontal: Dimens.margin20),
                 child: InkWell(
                   onTap: () => _selectTime(context),
-                  /*{
-                    showTimePicker(
-                      context: context,
-                      initialTime: _timeOfDay,
-                    ).then((timeOfDay) {
-                      setState(() {
-                        _timeOfDay = timeOfDay!;
-                      });
-                    });
-                  },*/
                   child: TextFormField(
                     enabled: false,
                     controller: timeController,
@@ -214,18 +190,21 @@ class _AddProductSheetState extends State<AddProductSheet> {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-                child: TextFormField(
-                  controller: productQtyController,
-                  keyboardType: TextInputType.number,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: "AppString.textAddQty",
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500)),
+                child: DropdownButton(
+                  value: dropDownValue.isNotEmpty ? dropDownValue : null,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  hint: const Text(AppString.textSelectType),
+                  items: itemSelectTypeList.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropDownValue = newValue!;
+                    });
+                  },
                 ),
               ),
             ),
@@ -336,13 +315,15 @@ class _AddProductSheetState extends State<AddProductSheet> {
                     height: Dimens.margin46,
                     width: Dimens.margin170,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       style: OutlinedButton.styleFrom(
                         disabledForegroundColor: AppColors.colorPrimary,
                         side: const BorderSide(color: AppColors.colorPrimary),
                       ),
                       child: const Text(
-                        "AppString.textCancel",
+                        AppString.textCancel,
                         style: TextStyle(
                           color: AppColors.colorPrimary,
                         ),
@@ -364,7 +345,7 @@ class _AddProductSheetState extends State<AddProductSheet> {
                               borderRadius: BorderRadius.all(Radius.zero)),
                           backgroundColor: AppColors.colorPrimary),
                       child: const Text(
-                        "AppString.textAdd",
+                        AppString.textAdd,
                         style: TextStyle(
                           color: AppColors.colorWhite2,
                         ),

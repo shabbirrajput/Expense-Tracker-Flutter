@@ -1,6 +1,6 @@
 import 'package:expense_tracker/core/app_string.dart';
 
-var items = [
+var itemMonthList = [
   AppString.textJanuary,
   AppString.textFebruary,
   AppString.textMarch,
@@ -13,4 +13,9 @@ var items = [
   AppString.textOctober,
   AppString.textNovember,
   AppString.textDecember,
+];
+
+var itemSelectTypeList = [
+  AppString.textIncome,
+  AppString.textExpense,
 ];
