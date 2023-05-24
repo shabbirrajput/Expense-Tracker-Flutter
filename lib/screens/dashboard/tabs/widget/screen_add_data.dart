@@ -42,7 +42,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     String addType = dropDownValueType;
     String addCategory = categoryController.text;
     String addPaymentMethod = paymentController.text;
-    String addStatus = dropDownValueType;
+    String addStatus = dropDownValueStatus;
     String addNote = noteController.text;
 
     if (addDate.isEmpty) {
@@ -71,7 +71,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       mAddDataModel.status = addStatus;
       mAddDataModel.note = addNote;
       mAddDataModel.addDataUserId = sp.getString(AppConfig.textUserId);
-      debugPrint('USER ID ---> ${sp.getString(AppConfig.textUserId)}');
 
       dbHelper = DbHelper();
       await dbHelper.saveAddData(mAddDataModel).then((addData) {
@@ -329,6 +328,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                 ),
                                 IconButton(
                                   onPressed: () {
+                                    showAlertDialogCategory(context);
+                                  },
+                                  /*{
                                     showModalBottomSheet<void>(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -383,7 +385,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                         );
                                       },
                                     );
-                                  },
+                                  },*/
                                   icon: const Icon(Icons.add),
                                 ),
                               ],
@@ -400,7 +402,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                       });
                     },*/
                     enabled: false,
-                    controller: categoryController,
+                    // controller: categoryController,
                     keyboardType: TextInputType.multiline,
                     style: const TextStyle(color: AppColors.colorBlack),
                     decoration: const InputDecoration(
@@ -456,6 +458,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                 ),
                                 IconButton(
                                     onPressed: () {
+                                      showAlertDialogPayment(context);
+                                    },
+                                    /*{
                                       showModalBottomSheet<void>(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -513,7 +518,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                           );
                                         },
                                       );
-                                    },
+                                    },*/
                                     icon: const Icon(Icons.add))
                               ],
                             ),
@@ -524,7 +529,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   },
                   child: TextFormField(
                     enabled: false,
-                    controller: paymentController,
+                    // controller: paymentController,
                     keyboardType: TextInputType.multiline,
                     style: const TextStyle(color: AppColors.colorBlack),
                     decoration: const InputDecoration(
@@ -655,6 +660,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     width: Dimens.margin170,
                     child: ElevatedButton(
                       onPressed: () {
+                        /*addProduct();*/
                         addData();
                       },
                       style: ElevatedButton.styleFrom(
@@ -675,6 +681,112 @@ class _ScreenAddDataState extends State<ScreenAddData> {
           ),
         ),
       ),
+    );
+  }
+
+  showAlertDialogCategory(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: const Text(AppString.textCancel),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text(AppString.textAdd),
+      onPressed: () {
+        addData();
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text(AppString.textAlert),
+      content: TextFormField(
+        controller: categoryController,
+        keyboardType: TextInputType.multiline,
+        minLines: Dimens.margin2.toInt(),
+        maxLines: Dimens.margin5.toInt(),
+        style: const TextStyle(color: AppColors.colorBlack),
+        decoration: const InputDecoration(
+          filled: true,
+          fillColor: AppColors.colorWhite2,
+          border: InputBorder.none,
+          hintText: AppString.textEnterCategory,
+          hintStyle: TextStyle(
+              color: AppColors.colorGrey, fontWeight: FontWeight.w500),
+          prefixIcon: Icon(
+            Icons.add_circle_outline_outlined,
+            color: AppColors.colorPrimary,
+          ),
+        ),
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  showAlertDialogPayment(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: const Text(AppString.textCancel),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text(AppString.textAdd),
+      onPressed: () {
+        addData();
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text(AppString.textAlert),
+      content: TextFormField(
+        controller: paymentController,
+        keyboardType: TextInputType.multiline,
+        minLines: Dimens.margin2.toInt(),
+        maxLines: Dimens.margin5.toInt(),
+        style: const TextStyle(color: AppColors.colorBlack),
+        decoration: const InputDecoration(
+          filled: true,
+          fillColor: AppColors.colorWhite2,
+          border: InputBorder.none,
+          hintText: AppString.textEnterPaymentMethod,
+          hintStyle: TextStyle(
+              color: AppColors.colorGrey, fontWeight: FontWeight.w500),
+          prefixIcon: Icon(
+            Icons.add_circle_outline_outlined,
+            color: AppColors.colorPrimary,
+          ),
+        ),
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

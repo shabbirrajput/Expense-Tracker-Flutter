@@ -7,9 +7,8 @@ import 'dart:io' as io;
 class DbHelper {
   late Database _db;
 
-  static const String dbName = 'expense.db';
-  static const String tableUser = 'user';
-  static const int version = 1;
+  static const String dbName = 'expenses.db';
+  static const int version = 2;
 
   ///Add data table
   static const String tableAddData = 'addData';

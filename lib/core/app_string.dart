@@ -55,4 +55,5 @@ class AppString {
   static const textLogout = 'Logout';
   static const textEnterCategory = 'Enter Category';
   static const textEnterPaymentMethod = 'Enter Payment Method';
+  static const textAlert = 'Alert!';
 }
