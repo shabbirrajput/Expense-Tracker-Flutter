@@ -1,14 +1,14 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
+import 'package:expense_tracker/db/navigator_key.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:expense_tracker/screens/dashboard/tabs/tab_expense.dart';
 import 'package:expense_tracker/screens/dashboard/tabs/tab_income.dart';
 import 'package:expense_tracker/screens/history/screen_history.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-int selectedIndex = 0;
 
 class ScreenDashboard extends StatefulWidget {
   const ScreenDashboard({Key? key}) : super(key: key);
@@ -19,6 +19,7 @@ class ScreenDashboard extends StatefulWidget {
 
 class _ScreenDashboardState extends State<ScreenDashboard> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  int selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -29,9 +30,17 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
   void onLogout() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.clear();
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(NavigatorKey.navigatorKey.currentContext!).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const ScreenLogin()),
         (Route<dynamic> route) => false);
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut().then((value) => onLogout());
+    } catch (e) {
+      onLogout();
+    }
   }
 
   @override
@@ -89,7 +98,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
             leading: IconButton(
               color: AppColors.colorPrimary,
               onPressed: () {},
-              icon: Icon(Icons.logout_outlined),
+              icon: const Icon(Icons.logout_outlined),
             ),
             title: const Text(AppString.textLogout),
             onTap: () {
@@ -113,12 +122,18 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           child: Scaffold(
             key: scaffoldKey,
             appBar: AppBar(
-              title: const Text(
-                AppString.textDashboard,
-                style: TextStyle(fontWeight: FontWeight.w500),
+              title: Text(
+                selectedIndex == 0
+                    ? AppString.textIncome
+                    : selectedIndex == 1
+                        ? AppString.textExpense
+                        : selectedIndex == 2
+                            ? AppString.textHistory
+                            : AppString.textDashboard,
+                style: const TextStyle(fontWeight: FontWeight.w500),
               ),
               leading: IconButton(
-                icon: const Icon(Icons.view_headline_sharp),
+                icon: const Icon(Icons.menu),
                 onPressed: () {
                   if (scaffoldKey.currentState!.isDrawerOpen) {
                     scaffoldKey.currentState!.openEndDrawer();
@@ -127,7 +142,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                   }
                 },
               ),
-              actions: [
+/*              actions: [
                 IconButton(
                     onPressed: () {
                       Navigator.push(
@@ -136,23 +151,54 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                               builder: (context) => const ScreenHistory()));
                     },
                     icon: const Icon(Icons.history))
-              ],
+              ],*/
               backgroundColor: AppColors.colorPrimary,
               automaticallyImplyLeading: false,
-              bottom: const TabBar(
+/*              bottom: const TabBar(
                 tabs: [
                   Tab(text: AppString.textIncome),
                   Tab(text: AppString.textExpense)
                 ],
-              ),
+              ),*/
             ),
+            bottomNavigationBar: BottomNavigationBar(
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.attach_money_outlined),
+                      backgroundColor: AppColors.colorPrimary,
+                      label: AppString.textIncome),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.money_off_outlined),
+                      backgroundColor: AppColors.colorPrimary,
+                      label: AppString.textExpense),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.history),
+                    backgroundColor: AppColors.colorPrimary,
+                    label: AppString.textHistory,
+                  ),
+                ],
+                type: BottomNavigationBarType.shifting,
+                currentIndex: selectedIndex,
+                selectedItemColor: selectedIndex == 0
+                    ? AppColors.colorGreen
+                    : selectedIndex == 1
+                        ? AppColors.colorRed
+                        : AppColors.colorBlack,
+                iconSize: Dimens.margin40,
+                onTap: _onItemTapped,
+                elevation: Dimens.margin5),
             drawer: drawer,
-            body: const TabBarView(
+            body: IndexedStack(
+              index: selectedIndex,
+              children: const [TabIncome(), TabExpense(), ScreenHistory()],
+            ),
+
+            /* const TabBarView(
               children: [
                 TabIncome(),
                 TabExpense(),
               ],
-            ),
+            ),*/
             /*IndexedStack(
               index: selectedIndex,
               children: [
@@ -167,7 +213,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                 const TabExpense(),
                 const ScreenHistory(),
               ],
-            ),*/ //
+            ),*/
           ),
         ),
       ),
@@ -185,7 +231,8 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
     Widget continueButton = ElevatedButton(
       child: const Text("log Out"),
       onPressed: () {
-        onLogout();
+        _signOut();
+
         Navigator.pop(context);
       },
     );

@@ -1,4 +1,4 @@
-import 'package:expense_tracker/db/models/user_model.dart';
+import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,14 +11,20 @@ class DbHelper {
   static const String tableUser = 'user';
   static const int version = 1;
 
-  static const String userID = 'id';
-  static const String userToken = 'token';
-  static const String userName = 'name';
-  static const String userEmail = 'email';
-  static const String userPassword = 'password';
+  ///Add data table
+  static const String tableAddData = 'addData';
+  static const String addId = 'id';
+  static const String addDataUserId = 'addDataUserId';
+  static const String addDate = 'date';
+  static const String addTime = 'time';
+  static const String addType = 'type';
+  static const String addCategory = 'category';
+  static const String addPaymentMethod = 'paymentMethod';
+  static const String addStatus = 'status';
+  static const String addNote = 'note';
 
   Future<Database> get db async {
-    /* if (_db != null) {
+    /*if (_db != null) {
       return _db;
     }*/
 
@@ -34,31 +40,23 @@ class DbHelper {
   }
 
   _onCreate(Database db, int intVersion) async {
-    await db.execute("CREATE TABLE $tableUser ("
-        " $userID INTEGER PRIMARY KEY, "
-        " $userName TEXT, "
-        " $userEmail TEXT,"
-        " $userPassword TEXT"
+    await db.execute("CREATE TABLE $tableAddData ("
+        " $addId INTEGER PRIMARY KEY, "
+        " $addDataUserId TEXT, "
+        " $addDate TEXT, "
+        " $addTime TEXT, "
+        " $addType TEXT, "
+        " $addCategory TEXT, "
+        " $addPaymentMethod TEXT, "
+        " $addStatus TEXT, "
+        " $addNote TEXT "
         ")");
   }
 
-  ///Insert Into User Table
-  Future<int> saveData(UserModel user) async {
+  ///Insert Into Add Data Table
+  Future<int> saveAddData(AddDataModel addData) async {
     var dbClient = await db;
-    var res = await dbClient.insert(tableUser, user.toJson());
+    var res = await dbClient.insert(tableAddData, addData.toJson());
     return res;
-  }
-
-  ///LoginUserCheck
-  Future<UserModel> getLoginUser(String email, String password) async {
-    var dbClient = await db;
-    var res = await dbClient.rawQuery("SELECT * FROM $tableUser WHERE "
-        "$userEmail = '$email' AND "
-        "$userPassword = '$password'");
-
-    if (res.isNotEmpty) {
-      return UserModel.fromJson(res.first);
-    }
-    return UserModel();
   }
 }

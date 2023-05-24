@@ -1,13 +1,18 @@
 import 'package:expense_tracker/core/app_color.dart';
+import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/core/app_list.dart';
+import 'package:expense_tracker/db/comHelper.dart';
+import 'package:expense_tracker/db/db_helper.dart';
+import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenAddData extends StatefulWidget {
-  final Function onProductAdd;
+  final Function onAddData;
 
-  const ScreenAddData({Key? key, required this.onProductAdd}) : super(key: key);
+  const ScreenAddData({Key? key, required this.onAddData}) : super(key: key);
 
   @override
   State<ScreenAddData> createState() => _ScreenAddDataState();
@@ -16,12 +21,66 @@ class ScreenAddData extends StatefulWidget {
 class _ScreenAddDataState extends State<ScreenAddData> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
-  final TextEditingController typeController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
-  final TextEditingController statusController = TextEditingController();
   final TextEditingController paymentController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
-  /*var dbHelper;*/
+  late DbHelper dbHelper;
+
+  @override
+  void initState() {
+    super.initState();
+    /* readJson();*/
+
+    dbHelper = DbHelper();
+  }
+
+  addData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+
+    String addDate = dateController.text;
+    String addTime = timeController.text;
+    String addType = dropDownValueType;
+    String addCategory = categoryController.text;
+    String addPaymentMethod = paymentController.text;
+    String addStatus = dropDownValueType;
+    String addNote = noteController.text;
+
+    if (addDate.isEmpty) {
+      alertDialog("Please Select Date");
+    } else if (addTime.isEmpty) {
+      alertDialog("Please Select Time");
+    } else if (addType.isEmpty) {
+      alertDialog("Please Select Type");
+    } /*else if (addCategory.isEmpty) {
+      alertDialog("Please Select Category");
+    } else if (addPaymentMethod.isEmpty) {
+      alertDialog("Please Select Payment Method");
+    } */
+    else if (addStatus.isEmpty) {
+      alertDialog("Please Select Status");
+    } else if (addNote.isEmpty) {
+      alertDialog("Please Enter Note");
+    } else {
+      AddDataModel mAddDataModel = AddDataModel();
+
+      mAddDataModel.date = addDate;
+      mAddDataModel.time = addTime;
+      mAddDataModel.type = addType;
+      mAddDataModel.category = addCategory;
+      mAddDataModel.paymentMethod = addPaymentMethod;
+      mAddDataModel.status = addStatus;
+      mAddDataModel.note = addNote;
+      mAddDataModel.addDataUserId = sp.getString(AppConfig.textUserId);
+      debugPrint('USER ID ---> ${sp.getString(AppConfig.textUserId)}');
+
+      dbHelper = DbHelper();
+      await dbHelper.saveAddData(mAddDataModel).then((addData) {
+        widget.onAddData();
+      }).catchError((error) {
+        alertDialog("Error: Data Save Fail--$error");
+      });
+    }
+  }
 
   ///Select Date
   DateTime selectedDate = DateTime.now();
@@ -102,13 +161,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
 
   String dropDownValueType = '';
   String dropDownValueStatus = '';
-  @override
-  void initState() {
-    super.initState();
-    /* readJson();*/
-
-    // dbHelper = DbHelper();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -249,26 +301,91 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                           mainAxisSpacing: 4.0),
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return Column(
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                                Icons.local_pizza_outlined)),
-                                        const Text('Pizza'),
-                                      ],
-                                    );
+                                    return GestureDetector(onTap: () {
+                                      // Get the index of the selected item.
+                                      final selectedIndex = index;
+
+                                      // Pass the index to the bottom sheet text field.
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return Column(
+                                              children: [
+                                                Text(
+                                                  '$selectedIndex',
+                                                ),
+                                                IconButton(
+                                                    onPressed: () {},
+                                                    icon: const Icon(Icons
+                                                        .local_pizza_outlined)),
+                                                const Text('Pizza'),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    });
                                   },
                                 ),
                                 IconButton(
-                                    onPressed: () {
-                                      if (newCategoryName.isNotEmpty) {
-                                        setState(() {
-                                          categories.add(newCategoryName);
-                                        });
-                                      }
-                                    },
-                                    icon: const Icon(Icons.add))
+                                  onPressed: () {
+                                    showModalBottomSheet<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return SizedBox(
+                                          height: Dimens.margin200,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal:
+                                                          Dimens.margin20),
+                                                  child: TextFormField(
+                                                    controller:
+                                                        categoryController,
+                                                    keyboardType:
+                                                        TextInputType.multiline,
+                                                    minLines:
+                                                        Dimens.margin2.toInt(),
+                                                    maxLines:
+                                                        Dimens.margin5.toInt(),
+                                                    style: const TextStyle(
+                                                        color: AppColors
+                                                            .colorBlack),
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      filled: true,
+                                                      fillColor:
+                                                          AppColors.colorWhite2,
+                                                      border: InputBorder.none,
+                                                      hintText: AppString
+                                                          .textEnterCategory,
+                                                      hintStyle: TextStyle(
+                                                          color: AppColors
+                                                              .colorGrey,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                      prefixIcon: Icon(
+                                                        Icons.category,
+                                                        color: AppColors
+                                                            .colorPrimary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
                               ],
                             ),
                           ),
@@ -277,11 +394,11 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     );
                   },
                   child: TextFormField(
-                    onChanged: (value) {
+                    /* onChanged: (value) {
                       setState(() {
                         newCategoryName = value;
                       });
-                    },
+                    },*/
                     enabled: false,
                     controller: categoryController,
                     keyboardType: TextInputType.multiline,
@@ -339,11 +456,63 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      if (newCategoryName.isNotEmpty) {
-                                        setState(() {
-                                          categories.add(newCategoryName);
-                                        });
-                                      }
+                                      showModalBottomSheet<void>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return SizedBox(
+                                            height: Dimens.margin200,
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal:
+                                                            Dimens.margin20),
+                                                    child: TextFormField(
+                                                      controller:
+                                                          paymentController,
+                                                      keyboardType:
+                                                          TextInputType
+                                                              .multiline,
+                                                      minLines: Dimens.margin2
+                                                          .toInt(),
+                                                      maxLines: Dimens.margin5
+                                                          .toInt(),
+                                                      style: const TextStyle(
+                                                          color: AppColors
+                                                              .colorBlack),
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        filled: true,
+                                                        fillColor: AppColors
+                                                            .colorWhite2,
+                                                        border:
+                                                            InputBorder.none,
+                                                        hintText: AppString
+                                                            .textEnterPaymentMethod,
+                                                        hintStyle: TextStyle(
+                                                            color: AppColors
+                                                                .colorGrey,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        prefixIcon: Icon(
+                                                          Icons.credit_card,
+                                                          color: AppColors
+                                                              .colorPrimary,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
                                     },
                                     icon: const Icon(Icons.add))
                               ],
@@ -486,7 +655,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     width: Dimens.margin170,
                     child: ElevatedButton(
                       onPressed: () {
-                        /*addProduct();*/
+                        addData();
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(

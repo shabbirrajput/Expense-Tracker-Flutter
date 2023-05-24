@@ -118,7 +118,7 @@ class _TabIncomeState extends State<TabIncome> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              ScreenAddData(onProductAdd: () {})));
+                              ScreenAddData(onAddData: () {})));
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),

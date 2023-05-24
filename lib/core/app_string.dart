@@ -53,4 +53,6 @@ class AppString {
   static const textNote = 'Note';
   static const textHistory = 'History';
   static const textLogout = 'Logout';
+  static const textEnterCategory = 'Enter Category';
+  static const textEnterPaymentMethod = 'Enter Payment Method';
 }

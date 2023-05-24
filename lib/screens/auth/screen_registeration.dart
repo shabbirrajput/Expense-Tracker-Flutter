@@ -3,11 +3,11 @@ import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/comHelper.dart';
 import 'package:expense_tracker/db/db_helper.dart';
-import 'package:expense_tracker/db/models/user_model.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ScreenRegisteration extends StatefulWidget {
   const ScreenRegisteration({Key? key}) : super(key: key);
@@ -40,34 +40,14 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
     passwordController.dispose();
   }
 
-  void signUpWithFirebase() {}
-
   signUp() async {
-    setState(() {
-      loading = true;
-    });
-    _auth
-        .createUserWithEmailAndPassword(
-            email: emailController.text.toString(),
-            password: passwordController.text.toString())
-        .then((value) {
-      setState(() {
-        loading = false;
-      });
-    }).onError((error, stackTrace) {
-      /*Utils().alertDialog(error.toString());*/
-      setState(() {
-        loading = false;
-      });
-    });
-
     String name = nameController.text;
     String email = emailController.text;
     String passwd = passwordController.text;
     String cPasswd = confirmPasswordController.text;
 
-    bool isExist = false;
-/*    if (email.isNotEmpty) {
+/*    bool isExist = false;
+    if (email.isNotEmpty) {
       await dbHelper.getCheckEmailUser(email).then((userData) {
         if (userData != null && userData.email != null) {
           isExist = true;
@@ -80,9 +60,10 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
       alertDialog("Please Enter Email");
     } else if (!RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
       alertDialog("Invalid Email");
-    } else if (isExist) {
+    } /*else if (isExist) {
       alertDialog("This Email ID Is Already Exist. Please Enter New Email");
-    } else if (passwd.isEmpty) {
+    }*/
+    else if (passwd.isEmpty) {
       alertDialog("Please Enter Password");
     } else if (!RegExp(r'(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)')
         .hasMatch(passwd)) {
@@ -93,7 +74,36 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
     } else if (passwd != cPasswd) {
       alertDialog('Password Mismatch');
     } else {
-      UserModel uModel = UserModel();
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          // Perform updates to the UI
+          setState(() => loading = true);
+        }
+      });
+      _auth
+          .createUserWithEmailAndPassword(
+              email: emailController.text.toString(),
+              password: passwordController.text.toString())
+          .then((value) {
+        alertDialog("Successfully Saved");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const ScreenLogin()));
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            // Perform updates to the UI
+            setState(() => loading = true);
+          }
+        });
+      }).onError((error, stackTrace) {
+        /*Utils().alertDialog(error.toString());*/
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            // Perform updates to the UI
+            setState(() => loading = false);
+          }
+        });
+      });
+/*      UserModel uModel = UserModel();
 
       uModel.name = name;
       uModel.email = email;
@@ -107,7 +117,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
       }).catchError((error) {
         print('Data NOT Saved');
         alertDialog("Error: Data Save Fail--$error");
-      });
+      });*/
     }
   }
 

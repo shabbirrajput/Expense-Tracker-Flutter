@@ -5,13 +5,13 @@ import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/core/utils/utils.dart';
 import 'package:expense_tracker/db/comHelper.dart';
 import 'package:expense_tracker/db/db_helper.dart';
-import 'package:expense_tracker/db/models/user_model.dart';
 import 'package:expense_tracker/db/navigator_key.dart';
 import 'package:expense_tracker/screens/auth/screen_registeration.dart';
 import 'package:expense_tracker/screens/dashboard/screen_dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenLogin extends StatefulWidget {
@@ -25,8 +25,6 @@ class _ScreenLoginState extends State<ScreenLogin> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
 
-  final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
-
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -39,33 +37,50 @@ class _ScreenLoginState extends State<ScreenLogin> {
     dbHelper = DbHelper();
   }
 
-/*  @override
+  @override
   void dispose() {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
-  }*/
+  }
 
   login() async {
-    setState(() {
-      loading = true;
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        // Perform updates to the UI
+        setState(() => loading = true);
+      }
     });
     _auth
         .signInWithEmailAndPassword(
             email: emailController.text.toString(),
             password: passwordController.text.toString())
-        .then((value) {
+        .then((value) async {
+      /// Store Firebase UI
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(AppConfig.textUserId, value.user!.uid);
+
       Utils().alertDialog(value.user!.email.toString());
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ScreenDashboard()));
-      setState(() {
-        loading = false;
+
+      Navigator.of(NavigatorKey.navigatorKey.currentContext!)
+          .pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const ScreenDashboard()),
+              (Route<dynamic> route) => false);
+
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          // Perform updates to the UI
+          setState(() => loading = true);
+        }
       });
     }).onError((error, stackTrace) {
       debugPrint(error.toString());
-      Utils().alertDialog(error.toString());
-      setState(() {
-        loading = false;
+      Utils().toastMessage(error.toString());
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          // Perform updates to the UI
+          setState(() => loading = false);
+        }
       });
     });
 
@@ -83,7 +98,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
       alertDialog(
           "Please Enter Strong Password\n\nHint : Password must contain Upper/Lower case, number and special character");
     } else {
-      await dbHelper.getLoginUser(email, passwd).then((userData) {
+      alertDialog("Login Successfully");
+      /*await dbHelper.getLoginUser(email, passwd).then((userData) {
         if (userData != null && userData.email != null) {
           setSP(userData).whenComplete(() {
             Navigator.pushAndRemoveUntil(
@@ -96,18 +112,19 @@ class _ScreenLoginState extends State<ScreenLogin> {
         }
       }).catchError((error) {
         alertDialog("Error: Login Fail");
-      });
+      });*/
     }
   }
 
-  Future setSP(UserModel user) async {
+/*  Future setSP(UserModel user) async {
     final SharedPreferences sp = await _pref;
 
     sp.setInt(AppConfig.textUserId, user.id!);
+    sp.setString(AppConfig.textUserToken, user.token!);
     sp.setString("name", user.name!);
     sp.setString("email", user.email!);
     sp.setString("password", user.password!);
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
