@@ -7,8 +7,8 @@ import 'dart:io' as io;
 class DbHelper {
   late Database _db;
 
-  static const String dbName = 'expenses.db';
-  static const int version = 2;
+  static const String dbName = 'expense.db';
+  static const int version = 1;
 
   ///Add data table
   static const String tableAddData = 'addData';
@@ -18,6 +18,7 @@ class DbHelper {
   static const String addTime = 'time';
   static const String addType = 'type';
   static const String addCategory = 'category';
+  static const String addAmount = 'amount';
   static const String addPaymentMethod = 'paymentMethod';
   static const String addStatus = 'status';
   static const String addNote = 'note';
@@ -46,6 +47,7 @@ class DbHelper {
         " $addTime TEXT, "
         " $addType TEXT, "
         " $addCategory TEXT, "
+        " $addAmount INTEGER, "
         " $addPaymentMethod TEXT, "
         " $addStatus TEXT, "
         " $addNote TEXT "
@@ -57,5 +59,20 @@ class DbHelper {
     var dbClient = await db;
     var res = await dbClient.insert(tableAddData, addData.toJson());
     return res;
+  }
+
+  ///Get Added Data
+  Future<List<AddDataModel>> getAddedData(String userId) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery("SELECT * FROM $tableAddData WHERE "
+        "$addDataUserId = $userId ");
+    try {
+      List<AddDataModel> mProductModel = List<AddDataModel>.from(
+          res.map((model) => AddDataModel.fromJson(model)));
+
+      return mProductModel;
+    } catch (e) {
+      return [];
+    }
   }
 }

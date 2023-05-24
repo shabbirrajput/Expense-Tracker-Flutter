@@ -22,17 +22,29 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
   final TextEditingController paymentController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   late DbHelper dbHelper;
 
   @override
   void initState() {
+    /*initData();*/
     super.initState();
     /* readJson();*/
 
     dbHelper = DbHelper();
   }
+
+  List<AddDataModel> mAddDataModel = [];
+
+/*  void initData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    dbHelper = DbHelper();
+    mAddDataModel =
+        await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
+    setState(() {});
+  }*/
 
   addData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
@@ -41,6 +53,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     String addTime = timeController.text;
     String addType = dropDownValueType;
     String addCategory = categoryController.text;
+    String addAmount = amountController.text;
     String addPaymentMethod = paymentController.text;
     String addStatus = dropDownValueStatus;
     String addNote = noteController.text;
@@ -67,6 +80,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       mAddDataModel.time = addTime;
       mAddDataModel.type = addType;
       mAddDataModel.category = addCategory;
+      mAddDataModel.amount = addAmount;
       mAddDataModel.paymentMethod = addPaymentMethod;
       mAddDataModel.status = addStatus;
       mAddDataModel.note = addNote;
@@ -146,17 +160,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       });
     }
   }
-
-  ///Add Category
-  List<String> categories = [];
-
-  void addCategory() {
-    setState(() {
-      categories.add('New Category');
-    });
-  }
-
-  String newCategoryName = '';
 
   String dropDownValueType = '';
   String dropDownValueStatus = '';
@@ -330,62 +333,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                   onPressed: () {
                                     showAlertDialogCategory(context);
                                   },
-                                  /*{
-                                    showModalBottomSheet<void>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return SizedBox(
-                                          height: Dimens.margin200,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal:
-                                                          Dimens.margin20),
-                                                  child: TextFormField(
-                                                    controller:
-                                                        categoryController,
-                                                    keyboardType:
-                                                        TextInputType.multiline,
-                                                    minLines:
-                                                        Dimens.margin2.toInt(),
-                                                    maxLines:
-                                                        Dimens.margin5.toInt(),
-                                                    style: const TextStyle(
-                                                        color: AppColors
-                                                            .colorBlack),
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      filled: true,
-                                                      fillColor:
-                                                          AppColors.colorWhite2,
-                                                      border: InputBorder.none,
-                                                      hintText: AppString
-                                                          .textEnterCategory,
-                                                      hintStyle: TextStyle(
-                                                          color: AppColors
-                                                              .colorGrey,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                      prefixIcon: Icon(
-                                                        Icons.category,
-                                                        color: AppColors
-                                                            .colorPrimary,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },*/
                                   icon: const Icon(Icons.add),
                                 ),
                               ],
@@ -420,6 +367,28 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     ),
                   ),
                 ),
+              ),
+              TextFormField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                minLines: Dimens.margin2.toInt(),
+                maxLines: Dimens.margin5.toInt(),
+                style: const TextStyle(color: AppColors.colorBlack),
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: AppColors.colorWhite2,
+                  border: InputBorder.none,
+                  hintText: AppString.textEnterAmount,
+                  hintStyle: TextStyle(
+                      color: AppColors.colorGrey, fontWeight: FontWeight.w500),
+                  prefixIcon: Icon(
+                    Icons.money_outlined,
+                    color: AppColors.colorPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: Dimens.margin18,
               ),
               SizedBox(
                 height: Dimens.margin72,
@@ -460,65 +429,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                     onPressed: () {
                                       showAlertDialogPayment(context);
                                     },
-                                    /*{
-                                      showModalBottomSheet<void>(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return SizedBox(
-                                            height: Dimens.margin200,
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal:
-                                                            Dimens.margin20),
-                                                    child: TextFormField(
-                                                      controller:
-                                                          paymentController,
-                                                      keyboardType:
-                                                          TextInputType
-                                                              .multiline,
-                                                      minLines: Dimens.margin2
-                                                          .toInt(),
-                                                      maxLines: Dimens.margin5
-                                                          .toInt(),
-                                                      style: const TextStyle(
-                                                          color: AppColors
-                                                              .colorBlack),
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        filled: true,
-                                                        fillColor: AppColors
-                                                            .colorWhite2,
-                                                        border:
-                                                            InputBorder.none,
-                                                        hintText: AppString
-                                                            .textEnterPaymentMethod,
-                                                        hintStyle: TextStyle(
-                                                            color: AppColors
-                                                                .colorGrey,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                        prefixIcon: Icon(
-                                                          Icons.credit_card,
-                                                          color: AppColors
-                                                              .colorPrimary,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },*/
                                     icon: const Icon(Icons.add))
                               ],
                             ),
@@ -589,23 +499,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   );
                 },
               ),
-              /*DropdownButton(
-                value:
-                    dropDownValueStatus.isNotEmpty ? dropDownValueStatus : null,
-                icon: const Icon(Icons.arrow_drop_down),
-                hint: const Text(AppString.textSelectStatus),
-                items: itemSelectStatusList.map((String items) {
-                  return DropdownMenuItem(
-                    value: items,
-                    child: Text(items),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropDownValueStatus = newValue!;
-                  });
-                },
-              ),*/
               const SizedBox(
                 height: Dimens.margin18,
               ),
@@ -700,7 +593,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       },
     );
 
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: const Text(AppString.textAlert),
       content: TextFormField(

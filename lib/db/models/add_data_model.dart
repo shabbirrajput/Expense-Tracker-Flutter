@@ -5,6 +5,7 @@ class AddDataModel {
   String? time;
   String? type;
   String? category;
+  dynamic amount;
   String? paymentMethod;
   String? status;
   String? note;
@@ -16,6 +17,7 @@ class AddDataModel {
       this.time,
       this.type,
       this.category,
+      this.amount,
       this.paymentMethod,
       this.status,
       this.note});
@@ -27,6 +29,7 @@ class AddDataModel {
     time = json['time'];
     type = json['type'];
     category = json['category'];
+    amount = json['amount'];
     paymentMethod = json['paymentMethod'];
     status = json['status'];
     note = json['note'];
@@ -40,6 +43,7 @@ class AddDataModel {
     data['time'] = time;
     data['type'] = type;
     data['category'] = category;
+    data['amount'] = amount;
     data['paymentMethod'] = paymentMethod;
     data['status'] = status;
     data['note'] = note;

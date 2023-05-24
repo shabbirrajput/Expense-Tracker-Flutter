@@ -56,7 +56,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
             email: emailController.text.toString(),
             password: passwordController.text.toString())
         .then((value) async {
-      /// Store Firebase UI
+      /// Store Firebase User ID In Shared Preference
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(AppConfig.textUserId, value.user!.uid);
 
