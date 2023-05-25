@@ -57,4 +57,5 @@ class AppString {
   static const textEnterAmount = 'Enter Amount';
   static const textEnterPaymentMethod = 'Enter Payment Method';
   static const textAlert = 'Alert!';
+  static const textType = 'Type :';
 }
