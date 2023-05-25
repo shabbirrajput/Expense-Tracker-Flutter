@@ -41,7 +41,9 @@ class _TabDashboardState extends State<TabDashboard> {
     mAddDataModel =
         await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
     setState(() {});
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +97,13 @@ class _TabDashboardState extends State<TabDashboard> {
                     ),
                     Text(
                       item.amount!.toString(),
-                      style: const TextStyle(
-                          color: /* item.type == */ AppColors.colorGreen),
+                      style: TextStyle(
+                          color: /* item.type == */
+                item.type! == 'Income'?
+                AppColors.colorGreen :
+                AppColors.colorRed
+
+                          ),
                     ),
                   ],
                 );
