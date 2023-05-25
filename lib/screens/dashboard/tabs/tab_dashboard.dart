@@ -10,14 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TabIncome extends StatefulWidget {
-  const TabIncome({Key? key}) : super(key: key);
+class TabDashboard extends StatefulWidget {
+  const TabDashboard({Key? key}) : super(key: key);
 
   @override
-  State<TabIncome> createState() => _TabIncomeState();
+  State<TabDashboard> createState() => _TabDashboardState();
 }
 
-class _TabIncomeState extends State<TabIncome> {
+class _TabDashboardState extends State<TabDashboard> {
   late DbHelper dbHelper;
   List<AddDataModel> mAddDataModel = [];
 

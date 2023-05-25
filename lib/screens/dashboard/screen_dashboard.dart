@@ -3,8 +3,7 @@ import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/navigator_key.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
-import 'package:expense_tracker/screens/dashboard/tabs/tab_expense.dart';
-import 'package:expense_tracker/screens/dashboard/tabs/tab_income.dart';
+import 'package:expense_tracker/screens/dashboard/tabs/tab_dashboard.dart';
 import 'package:expense_tracker/screens/history/screen_history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,27 +57,12 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
               onPressed: () {},
               icon: const Icon(
                 Icons.attach_money_outlined,
-                color: AppColors.colorGreen,
+                color: AppColors.colorPrimary,
               ),
             ),
-            title: const Text(AppString.textIncome),
+            title: const Text(AppString.textDashboard),
             onTap: () {
               _onItemTapped(0);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: IconButton(
-              color: AppColors.colorPrimary,
-              onPressed: () {},
-              icon: const Icon(
-                Icons.attach_money_outlined,
-                color: AppColors.colorRed,
-              ),
-            ),
-            title: const Text(AppString.textExpense),
-            onTap: () {
-              _onItemTapped(1);
               Navigator.pop(context);
             },
           ),
@@ -90,7 +74,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
             ),
             title: const Text(AppString.textHistory),
             onTap: () {
-              _onItemTapped(2);
+              _onItemTapped(1);
               Navigator.pop(context);
             },
           ),
@@ -124,12 +108,8 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
             appBar: AppBar(
               title: Text(
                 selectedIndex == 0
-                    ? AppString.textIncome
-                    : selectedIndex == 1
-                        ? AppString.textExpense
-                        : selectedIndex == 2
-                            ? AppString.textHistory
-                            : AppString.textDashboard,
+                    ? AppString.textDashboard
+                    : AppString.textHistory,
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
               leading: IconButton(
@@ -143,14 +123,15 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                 },
               ),
 /*              actions: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ScreenHistory()));
-                    },
-                    icon: const Icon(Icons.history))
+                if (selectedIndex == 0)
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const TabDashboard()));
+                      },
+                      icon: const Icon(Icons.history))
               ],*/
               backgroundColor: AppColors.colorPrimary,
               automaticallyImplyLeading: false,
@@ -168,10 +149,6 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                       backgroundColor: AppColors.colorPrimary,
                       label: AppString.textIncome),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.money_off_outlined),
-                      backgroundColor: AppColors.colorPrimary,
-                      label: AppString.textExpense),
-                  BottomNavigationBarItem(
                     icon: Icon(Icons.history),
                     backgroundColor: AppColors.colorPrimary,
                     label: AppString.textHistory,
@@ -180,17 +157,15 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                 type: BottomNavigationBarType.shifting,
                 currentIndex: selectedIndex,
                 selectedItemColor: selectedIndex == 0
-                    ? AppColors.colorGreen
-                    : selectedIndex == 1
-                        ? AppColors.colorRed
-                        : AppColors.colorBlack,
+                    ? AppColors.colorBlack
+                    : AppColors.colorBlack,
                 iconSize: Dimens.margin40,
                 onTap: _onItemTapped,
                 elevation: Dimens.margin5),
             drawer: drawer,
             body: IndexedStack(
               index: selectedIndex,
-              children: const [TabIncome(), TabExpense(), ScreenHistory()],
+              children: const [TabDashboard(), ScreenHistory()],
             ),
 
             /* const TabBarView(
