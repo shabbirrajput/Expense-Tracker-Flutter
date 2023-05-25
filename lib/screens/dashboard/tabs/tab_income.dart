@@ -1,10 +1,14 @@
 import 'package:expense_tracker/core/app_color.dart';
+import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/core/app_list.dart';
+import 'package:expense_tracker/db/db_helper.dart';
+import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:expense_tracker/screens/dashboard/tabs/widget/screen_add_data.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TabIncome extends StatefulWidget {
   const TabIncome({Key? key}) : super(key: key);
@@ -14,6 +18,9 @@ class TabIncome extends StatefulWidget {
 }
 
 class _TabIncomeState extends State<TabIncome> {
+  late DbHelper dbHelper;
+  List<AddDataModel> mAddDataModel = [];
+
   String dropDownValue = '';
   Map<String, double> dataMap = {
     "Travel": 40,
@@ -21,6 +28,20 @@ class _TabIncomeState extends State<TabIncome> {
     "Food": 20,
     "Other": 10,
   };
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  void initData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    dbHelper = DbHelper();
+    mAddDataModel =
+        await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +78,25 @@ class _TabIncomeState extends State<TabIncome> {
           ),
           Expanded(
             child: ListView.builder(
-              /*shrinkWrap: true,*/
-              itemCount: 5,
+              shrinkWrap: true,
+              itemCount: mAddDataModel.length,
               itemBuilder: (context, index) {
-                return const Row(
+                print('object ---> ${mAddDataModel.length}');
+                AddDataModel item = mAddDataModel[index];
+                return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppString.textIncome,
-                      style: TextStyle(color: AppColors.colorBlack),
+                      item.type!,
+                      style: const TextStyle(color: AppColors.colorBlack),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: Dimens.margin10,
                     ),
                     Text(
-                      AppString.textIncome,
-                      style: TextStyle(color: AppColors.colorGreen),
+                      item.amount!.toString(),
+                      style: const TextStyle(
+                          color: /* item.type == */ AppColors.colorGreen),
                     ),
                   ],
                 );
@@ -117,8 +141,11 @@ class _TabIncomeState extends State<TabIncome> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ScreenAddData(onAddData: () {})));
+                          builder: (context) => ScreenAddData(
+                                onAddData: () {
+                                  initData();
+                                },
+                              )));
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),

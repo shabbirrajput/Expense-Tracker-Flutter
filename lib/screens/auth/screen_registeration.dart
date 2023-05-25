@@ -3,6 +3,7 @@ import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/comHelper.dart';
 import 'package:expense_tracker/db/db_helper.dart';
+import 'package:expense_tracker/db/models/user_model.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -103,13 +104,13 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
           }
         });
       });
-/*      UserModel uModel = UserModel();
+      UserModel uModel = UserModel();
 
       uModel.name = name;
       uModel.email = email;
       uModel.password = passwd;
       dbHelper = DbHelper();
-      await dbHelper.saveData(uModel).then((userData) {
+      await dbHelper.saveUserData(uModel).then((userData) {
         alertDialog("Successfully Saved");
         print('Data Saved');
         Navigator.push(
@@ -117,7 +118,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
       }).catchError((error) {
         print('Data NOT Saved');
         alertDialog("Error: Data Save Fail--$error");
-      });*/
+      });
     }
   }
 

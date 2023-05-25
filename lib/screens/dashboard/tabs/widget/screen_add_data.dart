@@ -10,9 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenAddData extends StatefulWidget {
+  /*final AddDataModel mAddDataModel;*/
   final Function onAddData;
 
-  const ScreenAddData({Key? key, required this.onAddData}) : super(key: key);
+  const ScreenAddData(
+      {Key? key, required this.onAddData /*, required this.mAddDataModel*/})
+      : super(key: key);
 
   @override
   State<ScreenAddData> createState() => _ScreenAddDataState();
@@ -26,25 +29,21 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   final TextEditingController paymentController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   late DbHelper dbHelper;
+  List<AddDataModel> mAddDataModel = [];
 
   @override
   void initState() {
-    /*initData();*/
+    initData();
     super.initState();
-    /* readJson();*/
-
-    dbHelper = DbHelper();
   }
 
-  List<AddDataModel> mAddDataModel = [];
-
-/*  void initData() async {
+  void initData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     dbHelper = DbHelper();
     mAddDataModel =
         await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
     setState(() {});
-  }*/
+  }
 
   addData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
@@ -64,12 +63,11 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       alertDialog("Please Select Time");
     } else if (addType.isEmpty) {
       alertDialog("Please Select Type");
-    } /*else if (addCategory.isEmpty) {
+    } else if (addCategory.isEmpty) {
       alertDialog("Please Select Category");
     } else if (addPaymentMethod.isEmpty) {
       alertDialog("Please Select Payment Method");
-    } */
-    else if (addStatus.isEmpty) {
+    } else if (addStatus.isEmpty) {
       alertDialog("Please Select Status");
     } else if (addNote.isEmpty) {
       alertDialog("Please Enter Note");
@@ -85,10 +83,12 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       mAddDataModel.status = addStatus;
       mAddDataModel.note = addNote;
       mAddDataModel.addDataUserId = sp.getString(AppConfig.textUserId);
+      print('AddData ---> ${mAddDataModel}');
 
       dbHelper = DbHelper();
       await dbHelper.saveAddData(mAddDataModel).then((addData) {
         widget.onAddData();
+        print({mAddDataModel.id});
       }).catchError((error) {
         alertDialog("Error: Data Save Fail--$error");
       });
@@ -292,10 +292,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                GridView.builder(
+                                /*GridView.builder(
                                   shrinkWrap: true,
                                   physics: const ScrollPhysics(),
-                                  itemCount: 9,
+                                  itemCount: mAddDataModel.length,
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 4,
@@ -303,6 +303,33 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                           mainAxisSpacing: 4.0),
                                   itemBuilder:
                                       (BuildContext context, int index) {
+                                    AddDataModel item = mAddDataModel[index];
+                                    print('Length---> ${mAddDataModel.length}');
+                                    debugPrint(
+                                        'object ---> ${mAddDataModel[index].addDataUserId}');
+
+                                    return Column(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(Icons.category)),
+                                        Text(item.category!),
+                                      ],
+                                    );
+                                  },
+                                ),*/
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const ScrollPhysics(),
+                                  itemCount: mAddDataModel.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          crossAxisSpacing: 4.0,
+                                          mainAxisSpacing: 4.0),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    AddDataModel item = mAddDataModel[index];
                                     return GestureDetector(onTap: () {
                                       // Get the index of the selected item.
                                       final selectedIndex = index;
@@ -318,9 +345,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                                 ),
                                                 IconButton(
                                                     onPressed: () {},
-                                                    icon: const Icon(Icons
-                                                        .local_pizza_outlined)),
-                                                const Text('Pizza'),
+                                                    icon: const Icon(
+                                                        Icons.category)),
+                                                Text(item.category!),
                                               ],
                                             );
                                           },
@@ -406,21 +433,26 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                 GridView.builder(
                                   shrinkWrap: true,
                                   physics: const ScrollPhysics(),
-                                  itemCount: 9,
+                                  itemCount: mAddDataModel.length,
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
+                                          crossAxisCount: 3,
                                           crossAxisSpacing: 4.0,
                                           mainAxisSpacing: 4.0),
                                   itemBuilder:
                                       (BuildContext context, int index) {
+                                    AddDataModel item = mAddDataModel[index];
+                                    print('Length---> ${mAddDataModel.length}');
+                                    debugPrint(
+                                        'object ---> ${mAddDataModel[index].addDataUserId}');
+
                                     return Column(
                                       children: [
                                         IconButton(
                                             onPressed: () {},
                                             icon: const Icon(
                                                 Icons.payment_outlined)),
-                                        const Text('Card'),
+                                        Text(item.paymentMethod!),
                                       ],
                                     );
                                   },
@@ -553,8 +585,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     width: Dimens.margin170,
                     child: ElevatedButton(
                       onPressed: () {
-                        /*addProduct();*/
                         addData();
+                        initData();
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(
@@ -583,13 +615,14 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       child: const Text(AppString.textCancel),
       onPressed: () {
         Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
     Widget continueButton = TextButton(
       child: const Text(AppString.textAdd),
       onPressed: () {
-        addData();
         Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
 
@@ -635,13 +668,14 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       child: const Text(AppString.textCancel),
       onPressed: () {
         Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
     Widget continueButton = TextButton(
       child: const Text(AppString.textAdd),
       onPressed: () {
-        addData();
         Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
 

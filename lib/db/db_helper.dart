@@ -1,4 +1,5 @@
 import 'package:expense_tracker/db/models/add_data_model.dart';
+import 'package:expense_tracker/db/models/user_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -22,6 +23,14 @@ class DbHelper {
   static const String addPaymentMethod = 'paymentMethod';
   static const String addStatus = 'status';
   static const String addNote = 'note';
+
+  ///table USer
+  static const String tableUser = 'user';
+  static const String userID = 'id';
+  static const String userToken = 'token';
+  static const String userName = 'name';
+  static const String userEmail = 'email';
+  static const String userPassword = 'password';
 
   Future<Database> get db async {
     /*if (_db != null) {
@@ -52,6 +61,19 @@ class DbHelper {
         " $addStatus TEXT, "
         " $addNote TEXT "
         ")");
+
+    await db.execute("CREATE TABLE $tableUser ("
+        " $userID INTEGER PRIMARY KEY AUTOINCREMENT, "
+        " $userName TEXT, "
+        " $userEmail TEXT,"
+        " $userPassword TEXT"
+        ")");
+  }
+
+  Future<int> saveUserData(UserModel user) async {
+    var dbClient = await db;
+    var res = await dbClient.insert(tableUser, user.toJson());
+    return res;
   }
 
   ///Insert Into Add Data Table
@@ -62,17 +84,66 @@ class DbHelper {
   }
 
   ///Get Added Data
-  Future<List<AddDataModel>> getAddedData(String userId) async {
+  Future<List<AddDataModel>> getAddedData(String? userId) async {
     var dbClient = await db;
-    var res = await dbClient.rawQuery("SELECT * FROM $tableAddData WHERE "
-        "$addDataUserId = $userId ");
+    print('user id ---> $userId');
+    var res = await dbClient.rawQuery(
+        "SELECT * FROM $tableAddData WHERE $addDataUserId = ?", [userId]);
     try {
-      List<AddDataModel> mProductModel = List<AddDataModel>.from(
+      List<AddDataModel> mAddDataModel = List<AddDataModel>.from(
           res.map((model) => AddDataModel.fromJson(model)));
 
-      return mProductModel;
+      return mAddDataModel;
     } catch (e) {
       return [];
     }
   }
+
+  ///SnapShot Future logic
+/*
+  Future<List> getAllUsers() async {
+    final dbClient = await db;
+
+    final users = await dbClient.query(tableAddData);
+
+    return users.map((user) => AddDataModel.fromMap(user)).toList();
+  }
+*/
+
+  ///Get Added Data
+/*  Future<AddDataModel> getCartProduct(String? addDataId, int? userId) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery("SELECT * FROM $tableAddData WHERE "
+        "$addDataUserId = $addDataId AND "
+        "$addId = $userId");
+
+    if (res.isNotEmpty) {
+      return AddDataModel.fromJson(res.first);
+    }
+    return AddDataModel();
+  }*/
 }
+/*
+  Future<List<AddDataModel>> fetchProd() async {
+    var dbClient = await db;
+    List<Map<String, dynamic>> maps =
+        await dbClient.rawQuery('''SELECT * FROM $tableAddData''');
+    List<AddDataModel> product = [];
+    for (var map in maps) {
+      AddDataModel prod = AddDataModel(
+        id: map['id'],
+        addDataUserId: map['addDataUserId'],
+        date: map['date'],
+        time: map['time'],
+        type: map['type'],
+        category: map['category'],
+        amount: map['amount'],
+        paymentMethod: map['paymentMethod'],
+        status: map['status'],
+        note: map['note'],
+      );
+      product.add(prod);
+    }
+    return product;
+  }
+*/
