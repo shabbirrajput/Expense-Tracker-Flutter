@@ -732,14 +732,14 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     Widget cancelButton = TextButton(
       child: const Text(AppString.textCancel),
       onPressed: () {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         Navigator.of(context, rootNavigator: true).pop();
       },
     );
     Widget continueButton = TextButton(
       child: const Text(AppString.textAdd),
       onPressed: () {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         Navigator.of(context, rootNavigator: true).pop();
       },
     );

@@ -147,7 +147,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                   BottomNavigationBarItem(
                       icon: Icon(Icons.attach_money_outlined),
                       backgroundColor: AppColors.colorPrimary,
-                      label: AppString.textIncome),
+                      label: AppString.textDashboard),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.history),
                     backgroundColor: AppColors.colorPrimary,

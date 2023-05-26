@@ -13,11 +13,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-/*  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    return firebaseApp;
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,16 +23,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const ScreenLogin(),
-      /*FutureBuilder(
-          future: _initializeFirebase(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return const ScreenLogin();
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),*/
       navigatorKey: NavigatorKey.navigatorKey,
     );
   }
