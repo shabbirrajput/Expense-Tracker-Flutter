@@ -99,7 +99,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   ///Select Date
   DateTime selectedDate = DateTime.now();
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(1901, 1),
@@ -122,10 +122,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
         );
       },
     );
-    if (picked != null && picked != selectedDate) {
+    if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
-        selectedDate = picked;
-        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
+        selectedDate = pickedDate;
+        String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
         print(formattedDate); // Output: 25/05/2023
         dateController.value = TextEditingValue(text: formattedDate.toString());
       });
@@ -135,7 +135,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   ///Select Time
   TimeOfDay _timeOfDay = TimeOfDay.now();
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
+    final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: _timeOfDay,
       builder: (context, child) {
@@ -156,10 +156,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
         );
       },
     );
-    if (picked != null && picked != _timeOfDay) {
+    if (pickedTime != null && pickedTime != _timeOfDay) {
       setState(() {
-        _timeOfDay = picked;
-        String timeOfDay = picked.format(context);
+        _timeOfDay = pickedTime;
+        String timeOfDay = pickedTime.format(context);
 
         timeController.value = TextEditingValue(text: timeOfDay.toString());
       });
