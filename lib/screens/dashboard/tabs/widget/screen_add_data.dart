@@ -84,7 +84,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       mAddDataModel.status = addStatus;
       mAddDataModel.note = addNote;
       mAddDataModel.addDataUserId = sp.getString(AppConfig.textUserId);
-      print('AddData ---> ${mAddDataModel}');
+      print('AddData ---> $mAddDataModel');
 
       dbHelper = DbHelper();
       await dbHelper.saveAddData(mAddDataModel).then((addData) {
@@ -159,7 +159,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     if (picked != null && picked != _timeOfDay) {
       setState(() {
         _timeOfDay = picked;
-        timeController.value = TextEditingValue(text: picked.toString());
+        String timeOfDay = picked.format(context);
+
+        timeController.value = TextEditingValue(text: timeOfDay.toString());
       });
     }
   }
@@ -189,55 +191,55 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin24,
               ),
-              SizedBox(
-                height: Dimens.margin72,
-                child: InkWell(
-                  onTap: () => _selectDate(context),
-                  child: TextFormField(
-                    enabled: false,
-                    controller: dateController,
-                    keyboardType: TextInputType.datetime,
-                    style: const TextStyle(color: AppColors.colorBlack),
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: AppString.textSelectDate,
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500),
-                      prefixIcon: Icon(
-                        Icons.calendar_month_outlined,
-                        color: AppColors.colorPrimary,
-                      ),
+              InkWell(
+                onTap: () => _selectDate(context),
+                child: TextFormField(
+                  enabled: false,
+                  controller: dateController,
+                  keyboardType: TextInputType.datetime,
+                  style: const TextStyle(color: AppColors.colorBlack),
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.colorWhite2,
+                    border: InputBorder.none,
+                    hintText: AppString.textSelectDate,
+                    hintStyle: TextStyle(
+                        color: AppColors.colorGrey,
+                        fontWeight: FontWeight.w500),
+                    prefixIcon: Icon(
+                      Icons.calendar_month_outlined,
+                      color: AppColors.colorPrimary,
                     ),
                   ),
                 ),
               ),
-              SizedBox(
-                height: Dimens.margin72,
-                child: InkWell(
-                  onTap: () => _selectTime(context),
-                  child: TextFormField(
-                    enabled: false,
-                    controller: timeController,
-                    keyboardType: TextInputType.datetime,
-                    style: const TextStyle(color: AppColors.colorBlack),
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: AppString.textSelectTime,
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500),
-                      prefixIcon: Icon(
-                        Icons.watch_later_outlined,
-                        color: AppColors.colorPrimary,
-                      ),
+              const SizedBox(
+                height: Dimens.margin18,
+              ),
+              InkWell(
+                onTap: () => _selectTime(context),
+                child: TextFormField(
+                  enabled: false,
+                  controller: timeController,
+                  keyboardType: TextInputType.datetime,
+                  style: const TextStyle(color: AppColors.colorBlack),
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.colorWhite2,
+                    border: InputBorder.none,
+                    hintText: AppString.textSelectTime,
+                    hintStyle: TextStyle(
+                        color: AppColors.colorGrey,
+                        fontWeight: FontWeight.w500),
+                    prefixIcon: Icon(
+                      Icons.watch_later_outlined,
+                      color: AppColors.colorPrimary,
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: Dimens.margin18,
               ),
               FormField<String>(
                 builder: (FormFieldState<String> state) {
@@ -282,121 +284,173 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin18,
               ),
-              SizedBox(
-                height: Dimens.margin72,
-                child: InkWell(
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          height: Dimens.margin600,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                /*GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
-                                  itemCount: mAddDataModel.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
-                                          crossAxisSpacing: 4.0,
-                                          mainAxisSpacing: 4.0),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    AddDataModel item = mAddDataModel[index];
-                                    print('Length---> ${mAddDataModel.length}');
-                                    debugPrint(
-                                        'object ---> ${mAddDataModel[index].addDataUserId}');
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: Dimens.margin600,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              /*GridView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: mAddDataModel.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 4,
+                                        crossAxisSpacing: 4.0,
+                                        mainAxisSpacing: 4.0),
+                                itemBuilder:
+                                    (BuildContext context, int index) {
+                                  AddDataModel item = mAddDataModel[index];
+                                  print('Length---> ${mAddDataModel.length}');
+                                  debugPrint(
+                                      'object ---> ${mAddDataModel[index].addDataUserId}');
 
-                                    return Column(
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(Icons.category)),
-                                        Text(item.category!),
-                                      ],
+                                  return Column(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.category)),
+                                      Text(item.category!),
+                                    ],
+                                  );
+                                },
+                              ),*/
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: mAddDataModel.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 4,
+                                        crossAxisSpacing: 4.0,
+                                        mainAxisSpacing: 4.0),
+                                itemBuilder: (BuildContext context, int index) {
+                                  AddDataModel item = mAddDataModel[index];
+                                  return GestureDetector(onTap: () {
+                                    // Get the index of the selected item.
+                                    final selectedIndex = index;
+
+                                    // Pass the index to the bottom sheet text field.
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return Column(
+                                            children: [
+                                              Text(
+                                                '$selectedIndex',
+                                              ),
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: const Icon(
+                                                      Icons.category)),
+                                              Text(item.category!),
+                                            ],
+                                          );
+                                        },
+                                      ),
                                     );
-                                  },
-                                ),*/
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
-                                  itemCount: mAddDataModel.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
-                                          crossAxisSpacing: 4.0,
-                                          mainAxisSpacing: 4.0),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    AddDataModel item = mAddDataModel[index];
-                                    return GestureDetector(onTap: () {
-                                      // Get the index of the selected item.
-                                      final selectedIndex = index;
-
-                                      // Pass the index to the bottom sheet text field.
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return Column(
-                                              children: [
-                                                Text(
-                                                  '$selectedIndex',
-                                                ),
-                                                IconButton(
-                                                    onPressed: () {},
-                                                    icon: const Icon(
-                                                        Icons.category)),
-                                                Text(item.category!),
-                                              ],
-                                            );
-                                          },
+                                  });
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: Dimens.margin46,
+                                    width: Dimens.margin170,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        disabledForegroundColor:
+                                            AppColors.colorPrimary,
+                                        side: const BorderSide(
+                                            color: AppColors.colorPrimary),
+                                      ),
+                                      child: const Text(
+                                        AppString.textCancel,
+                                        style: TextStyle(
+                                          color: AppColors.colorPrimary,
                                         ),
-                                      );
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    showAlertDialogCategory(context);
-                                  },
-                                  icon: const Icon(Icons.add),
-                                ),
-                              ],
-                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: Dimens.margin8,
+                                  ),
+                                  SizedBox(
+                                    height: Dimens.margin46,
+                                    width: Dimens.margin170,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        showAlertDialogCategory(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.zero)),
+                                          backgroundColor:
+                                              AppColors.colorPrimary),
+                                      child: const Text(
+                                        AppString.textAdd,
+                                        style: TextStyle(
+                                          color: AppColors.colorWhite2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: Dimens.margin20,
+                              ),
+                              /*IconButton(
+                                onPressed: () {
+                                  showAlertDialogCategory(context);
+                                },
+                                icon: const Icon(Icons.add),
+                              ),*/
+                            ],
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: TextFormField(
-                    /* onChanged: (value) {
-                      setState(() {
-                        newCategoryName = value;
-                      });
-                    },*/
-                    enabled: false,
-                    // controller: categoryController,
-                    keyboardType: TextInputType.multiline,
-                    style: const TextStyle(color: AppColors.colorBlack),
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: AppString.textSelectCategory,
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500),
-                      prefixIcon: Icon(
-                        Icons.category_outlined,
-                        color: AppColors.colorPrimary,
-                      ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: TextFormField(
+                  /* onChanged: (value) {
+                    setState(() {
+                      newCategoryName = value;
+                    });
+                  },*/
+                  enabled: false,
+                  // controller: categoryController,
+                  keyboardType: TextInputType.multiline,
+                  style: const TextStyle(color: AppColors.colorBlack),
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.colorWhite2,
+                    border: InputBorder.none,
+                    hintText: AppString.textSelectCategory,
+                    hintStyle: TextStyle(
+                        color: AppColors.colorGrey,
+                        fontWeight: FontWeight.w500),
+                    prefixIcon: Icon(
+                      Icons.category_outlined,
+                      color: AppColors.colorPrimary,
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: Dimens.margin18,
               ),
               TextFormField(
                 controller: amountController,
@@ -420,78 +474,131 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin18,
               ),
-              SizedBox(
-                height: Dimens.margin72,
-                child: InkWell(
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          height: Dimens.margin600,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const ScrollPhysics(),
-                                  itemCount: mAddDataModel.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 4.0,
-                                          mainAxisSpacing: 4.0),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    AddDataModel item = mAddDataModel[index];
-                                    print('Length---> ${mAddDataModel.length}');
-                                    debugPrint(
-                                        'object ---> ${mAddDataModel[index].addDataUserId}');
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: Dimens.margin600,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            children: [
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: mAddDataModel.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 4.0,
+                                        mainAxisSpacing: 4.0),
+                                itemBuilder: (BuildContext context, int index) {
+                                  AddDataModel item = mAddDataModel[index];
+                                  print('Length---> ${mAddDataModel.length}');
+                                  debugPrint(
+                                      'object ---> ${mAddDataModel[index].addDataUserId}');
 
-                                    return Column(
-                                      children: [
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                                Icons.payment_outlined)),
-                                        Text(item.paymentMethod!),
-                                      ],
-                                    );
+                                  return Column(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(
+                                              Icons.payment_outlined)),
+                                      Text(item.paymentMethod!),
+                                    ],
+                                  );
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: Dimens.margin46,
+                                    width: Dimens.margin170,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        disabledForegroundColor:
+                                            AppColors.colorPrimary,
+                                        side: const BorderSide(
+                                            color: AppColors.colorPrimary),
+                                      ),
+                                      child: const Text(
+                                        AppString.textCancel,
+                                        style: TextStyle(
+                                          color: AppColors.colorPrimary,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: Dimens.margin8,
+                                  ),
+                                  SizedBox(
+                                    height: Dimens.margin46,
+                                    width: Dimens.margin170,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        showAlertDialogPayment(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.zero)),
+                                          backgroundColor:
+                                              AppColors.colorPrimary),
+                                      child: const Text(
+                                        AppString.textAdd,
+                                        style: TextStyle(
+                                          color: AppColors.colorWhite2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: Dimens.margin20,
+                              ),
+                              /* IconButton(
+                                  onPressed: () {
+                                    showAlertDialogPayment(context);
                                   },
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      showAlertDialogPayment(context);
-                                    },
-                                    icon: const Icon(Icons.add))
-                              ],
-                            ),
+                                  icon: const Icon(Icons.add))*/
+                            ],
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: TextFormField(
-                    enabled: false,
-                    // controller: paymentController,
-                    keyboardType: TextInputType.multiline,
-                    style: const TextStyle(color: AppColors.colorBlack),
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: AppString.textSelectPaymentMethod,
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500),
-                      prefixIcon: Icon(
-                        Icons.payment_outlined,
-                        color: AppColors.colorPrimary,
-                      ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: TextFormField(
+                  enabled: false,
+                  // controller: paymentController,
+                  keyboardType: TextInputType.multiline,
+                  style: const TextStyle(color: AppColors.colorBlack),
+                  decoration: const InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.colorWhite2,
+                    border: InputBorder.none,
+                    hintText: AppString.textSelectPaymentMethod,
+                    hintStyle: TextStyle(
+                        color: AppColors.colorGrey,
+                        fontWeight: FontWeight.w500),
+                    prefixIcon: Icon(
+                      Icons.payment_outlined,
+                      color: AppColors.colorPrimary,
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: Dimens.margin18,
               ),
               FormField<String>(
                 builder: (FormFieldState<String> state) {
@@ -557,7 +664,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                 ),
               ),
               const SizedBox(
-                height: Dimens.margin18,
+                height: Dimens.margin20,
               ),
               Row(
                 children: [
