@@ -1,8 +1,8 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
-import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/core/app_list.dart';
+import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/comHelper.dart';
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/db/models/add_data_model.dart';
@@ -99,7 +99,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   ///Select Date
   DateTime selectedDate = DateTime.now();
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(1901, 1),
@@ -122,10 +122,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
         );
       },
     );
-    if (pickedDate != null && pickedDate != selectedDate) {
+    if (picked != null && picked != selectedDate) {
       setState(() {
-        selectedDate = pickedDate;
-        String formattedDate = DateFormat('dd/MM/yyyy').format(pickedDate);
+        selectedDate = picked;
+        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
         print(formattedDate); // Output: 25/05/2023
         dateController.value = TextEditingValue(text: formattedDate.toString());
       });
@@ -135,7 +135,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   ///Select Time
   TimeOfDay _timeOfDay = TimeOfDay.now();
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _timeOfDay,
       builder: (context, child) {
@@ -156,10 +156,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
         );
       },
     );
-    if (pickedTime != null && pickedTime != _timeOfDay) {
+    if (picked != null && picked != _timeOfDay) {
       setState(() {
-        _timeOfDay = pickedTime;
-        String timeOfDay = pickedTime.format(context);
+        _timeOfDay = picked;
+        String timeOfDay = picked.format(context);
 
         timeController.value = TextEditingValue(text: timeOfDay.toString());
       });
@@ -191,52 +191,60 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin24,
               ),
-              InkWell(
-                onTap: () => _selectDate(context),
-                child: TextFormField(
-                  enabled: false,
-                  controller: dateController,
-                  keyboardType: TextInputType.datetime,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.colorWhite2,
-                    border: InputBorder.none,
-                    hintText: AppString.textSelectDate,
-                    hintStyle: TextStyle(
-                        color: AppColors.colorGrey,
-                        fontWeight: FontWeight.w500),
-                    prefixIcon: Icon(
-                      Icons.calendar_month_outlined,
-                      color: AppColors.colorPrimary,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () => _selectDate(context),
+                    child: SizedBox(
+                      width: 180,
+                      child: TextFormField(
+                        enabled: false,
+                        controller: dateController,
+                        keyboardType: TextInputType.datetime,
+                        style: const TextStyle(color: AppColors.colorBlack),
+                        decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.colorWhite2,
+                          border: InputBorder.none,
+                          hintText: AppString.textSelectDate,
+                          hintStyle: TextStyle(
+                              color: AppColors.colorGrey,
+                              fontWeight: FontWeight.w500),
+                          prefixIcon: Icon(
+                            Icons.calendar_month_outlined,
+                            color: AppColors.colorPrimary,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: Dimens.margin18,
-              ),
-              InkWell(
-                onTap: () => _selectTime(context),
-                child: TextFormField(
-                  enabled: false,
-                  controller: timeController,
-                  keyboardType: TextInputType.datetime,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.colorWhite2,
-                    border: InputBorder.none,
-                    hintText: AppString.textSelectTime,
-                    hintStyle: TextStyle(
-                        color: AppColors.colorGrey,
-                        fontWeight: FontWeight.w500),
-                    prefixIcon: Icon(
-                      Icons.watch_later_outlined,
-                      color: AppColors.colorPrimary,
+                  InkWell(
+                    onTap: () => _selectTime(context),
+                    child: SizedBox(
+                      width: 150,
+                      child: TextFormField(
+                        enabled: false,
+                        controller: timeController,
+                        keyboardType: TextInputType.datetime,
+                        style: const TextStyle(color: AppColors.colorBlack),
+                        decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.colorWhite2,
+                          border: InputBorder.none,
+                          hintText: AppString.textSelectTime,
+                          hintStyle: TextStyle(
+                              color: AppColors.colorGrey,
+                              fontWeight: FontWeight.w500),
+                          prefixIcon: Icon(
+                            Icons.watch_later_outlined,
+                            color: AppColors.colorPrimary,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(
                 height: Dimens.margin18,
@@ -284,18 +292,41 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin18,
               ),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        height: Dimens.margin600,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              /*GridView.builder(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /*IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.add,
+                      color: AppColors.colorPrimary,
+                    ),
+                  ),*/
+                  ElevatedButton(
+                    onPressed: () {
+                      showAlertDialogCategory(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: AppColors.colorWhite),
+                    child: const Icon(
+                      Icons.add,
+                      color: AppColors.colorPrimary,
+                      size: Dimens.margin20,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            height: Dimens.margin600,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  /*GridView.builder(
                                 shrinkWrap: true,
                                 physics: const ScrollPhysics(),
                                 itemCount: mAddDataModel.length,
@@ -321,133 +352,92 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                   );
                                 },
                               ),*/
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                itemCount: mAddDataModel.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 4,
-                                        crossAxisSpacing: 4.0,
-                                        mainAxisSpacing: 4.0),
-                                itemBuilder: (BuildContext context, int index) {
-                                  AddDataModel item = mAddDataModel[index];
-                                  return GestureDetector(onTap: () {
-                                    // Get the index of the selected item.
-                                    final selectedIndex = index;
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    itemCount: mAddDataModel.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 4,
+                                            crossAxisSpacing: 4.0,
+                                            mainAxisSpacing: 4.0),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      AddDataModel item = mAddDataModel[index];
+                                      return GestureDetector(onTap: () {
+                                        // Get the index of the selected item.
+                                        final selectedIndex = index;
 
-                                    // Pass the index to the bottom sheet text field.
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return Column(
-                                            children: [
-                                              Text(
-                                                '$selectedIndex',
-                                              ),
-                                              IconButton(
-                                                  onPressed: () {},
-                                                  icon: const Icon(
-                                                      Icons.category)),
-                                              Text(item.category!),
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  });
-                                },
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: Dimens.margin46,
-                                    width: Dimens.margin170,
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        disabledForegroundColor:
-                                            AppColors.colorPrimary,
-                                        side: const BorderSide(
-                                            color: AppColors.colorPrimary),
-                                      ),
-                                      child: const Text(
-                                        AppString.textCancel,
-                                        style: TextStyle(
-                                          color: AppColors.colorPrimary,
-                                        ),
-                                      ),
-                                    ),
+                                        // Pass the index to the bottom sheet text field.
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) {
+                                              return Column(
+                                                children: [
+                                                  Text(
+                                                    '$selectedIndex',
+                                                  ),
+                                                  IconButton(
+                                                      onPressed: () {},
+                                                      icon: const Icon(
+                                                          Icons.category)),
+                                                  Text(item.category!),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      });
+                                    },
                                   ),
-                                  const SizedBox(
-                                    width: Dimens.margin8,
-                                  ),
-                                  SizedBox(
-                                    height: Dimens.margin46,
-                                    width: Dimens.margin170,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        showAlertDialogCategory(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.zero)),
-                                          backgroundColor:
-                                              AppColors.colorPrimary),
-                                      child: const Text(
-                                        AppString.textAdd,
-                                        style: TextStyle(
-                                          color: AppColors.colorWhite2,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
+                                  /* const SizedBox(
                                 height: Dimens.margin20,
-                              ),
-                              /*IconButton(
+                              ),*/
+                                  /* IconButton(
                                 onPressed: () {
                                   showAlertDialogCategory(context);
                                 },
                                 icon: const Icon(Icons.add),
                               ),*/
-                            ],
-                          ),
-                        ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-                child: TextFormField(
-                  /* onChanged: (value) {
-                    setState(() {
-                      newCategoryName = value;
-                    });
-                  },*/
-                  enabled: false,
-                  // controller: categoryController,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.colorWhite2,
-                    border: InputBorder.none,
-                    hintText: AppString.textSelectCategory,
-                    hintStyle: TextStyle(
-                        color: AppColors.colorGrey,
-                        fontWeight: FontWeight.w500),
-                    prefixIcon: Icon(
-                      Icons.category_outlined,
-                      color: AppColors.colorPrimary,
+                    child: SizedBox(
+                      width: Dimens.margin280,
+                      child: TextFormField(
+                        /* onChanged: (value) {
+                          setState(() {
+                            newCategoryName = value;
+                          });
+                        },*/
+                        enabled: false,
+                        // controller: categoryController,
+                        keyboardType: TextInputType.multiline,
+                        style: const TextStyle(color: AppColors.colorBlack),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.colorWhite2,
+                          border: InputBorder.none,
+                          hintText: AppString.textSelectCategory,
+                          hintStyle: const TextStyle(
+                              color: AppColors.colorGrey,
+                              fontWeight: FontWeight.w500),
+                          prefixIcon: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.category_outlined,
+                              color: AppColors.colorPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(
                 height: Dimens.margin18,
@@ -474,128 +464,92 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin18,
               ),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        height: Dimens.margin600,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            children: [
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                itemCount: mAddDataModel.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 4.0,
-                                        mainAxisSpacing: 4.0),
-                                itemBuilder: (BuildContext context, int index) {
-                                  AddDataModel item = mAddDataModel[index];
-                                  print('Length---> ${mAddDataModel.length}');
-                                  debugPrint(
-                                      'object ---> ${mAddDataModel[index].addDataUserId}');
-
-                                  return Column(
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                              Icons.payment_outlined)),
-                                      Text(item.paymentMethod!),
-                                    ],
-                                  );
-                                },
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      showAlertDialogPayment(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        backgroundColor: AppColors.colorWhite),
+                    child: const Icon(
+                      Icons.add,
+                      color: AppColors.colorPrimary,
+                      size: Dimens.margin20,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            height: Dimens.margin600,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    height: Dimens.margin46,
-                                    width: Dimens.margin170,
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      style: OutlinedButton.styleFrom(
-                                        disabledForegroundColor:
-                                            AppColors.colorPrimary,
-                                        side: const BorderSide(
-                                            color: AppColors.colorPrimary),
-                                      ),
-                                      child: const Text(
-                                        AppString.textCancel,
-                                        style: TextStyle(
-                                          color: AppColors.colorPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: Dimens.margin8,
-                                  ),
-                                  SizedBox(
-                                    height: Dimens.margin46,
-                                    width: Dimens.margin170,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        showAlertDialogPayment(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.zero)),
-                                          backgroundColor:
-                                              AppColors.colorPrimary),
-                                      child: const Text(
-                                        AppString.textAdd,
-                                        style: TextStyle(
-                                          color: AppColors.colorWhite2,
-                                        ),
-                                      ),
-                                    ),
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    itemCount: mAddDataModel.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            crossAxisSpacing: 4.0,
+                                            mainAxisSpacing: 4.0),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      AddDataModel item = mAddDataModel[index];
+                                      print(
+                                          'Length---> ${mAddDataModel.length}');
+                                      debugPrint(
+                                          'object ---> ${mAddDataModel[index].addDataUserId}');
+
+                                      return Column(
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(
+                                                  Icons.payment_outlined)),
+                                          Text(item.paymentMethod!),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                height: Dimens.margin20,
-                              ),
-                              /* IconButton(
-                                  onPressed: () {
-                                    showAlertDialogPayment(context);
-                                  },
-                                  icon: const Icon(Icons.add))*/
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-                child: TextFormField(
-                  enabled: false,
-                  // controller: paymentController,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(color: AppColors.colorBlack),
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.colorWhite2,
-                    border: InputBorder.none,
-                    hintText: AppString.textSelectPaymentMethod,
-                    hintStyle: TextStyle(
-                        color: AppColors.colorGrey,
-                        fontWeight: FontWeight.w500),
-                    prefixIcon: Icon(
-                      Icons.payment_outlined,
-                      color: AppColors.colorPrimary,
+                    child: SizedBox(
+                      width: Dimens.margin280,
+                      child: TextFormField(
+                        enabled: false,
+                        controller: paymentController,
+                        keyboardType: TextInputType.multiline,
+                        style: const TextStyle(color: AppColors.colorBlack),
+                        decoration: const InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.colorWhite2,
+                          border: InputBorder.none,
+                          hintText: AppString.textSelectPaymentMethod,
+                          hintStyle: TextStyle(
+                              color: AppColors.colorGrey,
+                              fontWeight: FontWeight.w500),
+                          prefixIcon: Icon(
+                            Icons.payment_outlined,
+                            color: AppColors.colorPrimary,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
               const SizedBox(
                 height: Dimens.margin18,
@@ -725,14 +679,14 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     Widget cancelButton = TextButton(
       child: const Text(AppString.textCancel),
       onPressed: () {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         Navigator.of(context, rootNavigator: true).pop();
       },
     );
     Widget continueButton = TextButton(
       child: const Text(AppString.textAdd),
       onPressed: () {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         Navigator.of(context, rootNavigator: true).pop();
       },
     );

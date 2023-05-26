@@ -58,46 +58,71 @@ class _TabDashboardState extends State<TabDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.margin20),
-      child: Column(
-        children: [
-          /*  const SizedBox(
-            height: Dimens.margin10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text()],
-          ),*/
-          const SizedBox(
-            height: Dimens.margin10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DropdownButton(
-                value: dropDownValue.isNotEmpty ? dropDownValue : null,
-                icon: const Icon(Icons.arrow_drop_down),
-                hint: const Text(AppString.textSelectMonth),
-                items: itemMonthList.map((String items) {
-                  return DropdownMenuItem(
-                    value: items,
-                    child: Text(items),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropDownValue = newValue!;
-                  });
-                },
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Dimens.margin20),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: Dimens.margin10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  value: dropDownValue.isNotEmpty ? dropDownValue : null,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  hint: const Text(AppString.textSelectMonth),
+                  items: itemMonthList.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      dropDownValue = newValue!;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: Dimens.margin10,
+            ),
+            PieChart(
+              dataMap: dataMap,
+              animationDuration: const Duration(milliseconds: 800),
+              chartLegendSpacing: 32,
+              chartRadius: MediaQuery.of(context).size.width / 2.2,
+              colorList: colorList,
+              initialAngleInDegree: 0,
+              chartType: ChartType.disc,
+              ringStrokeWidth: 32,
+              centerText: "Expense Chart",
+              legendOptions: const LegendOptions(
+                showLegendsInRow: false,
+                legendPosition: LegendPosition.right,
+                showLegends: true,
+                // legendShape: _BoxShape.circle,
+                legendTextStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ],
-          ),
-          const SizedBox(
-            height: Dimens.margin10,
-          ),
-          Expanded(
-            child: ListView.builder(
+              chartValuesOptions: const ChartValuesOptions(
+                showChartValueBackground: true,
+                showChartValues: true,
+                showChartValuesInPercentage: true,
+                showChartValuesOutside: false,
+                decimalPlaces: 0,
+              ),
+              // gradientList: ---To add gradient colors---
+              // emptyColorGradient: ---Empty Color gradient---
+            ),
+            const SizedBox(
+              height: Dimens.margin10,
+            ),
+            ListView.builder(
               physics: const ScrollPhysics(),
               shrinkWrap: true,
               itemCount: mAddDataModel.length,
@@ -201,62 +226,33 @@ class _TabDashboardState extends State<TabDashboard> {
                 );
               },
             ),
-          ),
-          PieChart(
-            dataMap: dataMap,
-            animationDuration: const Duration(milliseconds: 800),
-            chartLegendSpacing: 32,
-            chartRadius: MediaQuery.of(context).size.width / 2.2,
-            colorList: colorList,
-            initialAngleInDegree: 0,
-            chartType: ChartType.disc,
-            ringStrokeWidth: 32,
-            centerText: "Expense Chart",
-            legendOptions: const LegendOptions(
-              showLegendsInRow: false,
-              legendPosition: LegendPosition.right,
-              showLegends: true,
-              // legendShape: _BoxShape.circle,
-              legendTextStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            chartValuesOptions: const ChartValuesOptions(
-              showChartValueBackground: true,
-              showChartValues: true,
-              showChartValuesInPercentage: true,
-              showChartValuesOutside: false,
-              decimalPlaces: 0,
-            ),
-            // gradientList: ---To add gradient colors---
-            // emptyColorGradient: ---Empty Color gradient---
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(Dimens.margin18),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ScreenAddData(
-                                onAddData: () {
-                                  initData();
-                                },
-                              )));
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(Dimens.margin20),
-                  backgroundColor: AppColors.colorPrimary,
-                  foregroundColor: AppColors.colorWhite,
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(Dimens.margin18),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ScreenAddData(
+                                  onAddData: () {
+                                    initData();
+                                  },
+                                )));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(Dimens.margin20),
+                    backgroundColor: AppColors.colorPrimary,
+                    foregroundColor: AppColors.colorWhite,
+                  ),
+                  child: const Icon(Icons.add, color: AppColors.colorWhite),
                 ),
-                child: const Icon(Icons.add, color: AppColors.colorWhite),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

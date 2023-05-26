@@ -5,4 +5,5 @@ class NavigatorKey {
   static final navigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'navigator');
   static final dropDownKey = GlobalKey(debugLabel: 'dropDown');
+  static final dismissKey = GlobalKey(debugLabel: 'dismiss');
 }
