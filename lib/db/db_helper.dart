@@ -99,6 +99,37 @@ class DbHelper {
     }
   }
 
+  ///Remove Add Data Table
+  Future<int> deleteData(int id) async {
+    var dbClient = await db;
+    return await dbClient
+        .rawDelete('DELETE FROM $tableAddData WHERE $addId = ?', [id]);
+  }
+
+  ///Get Total Amount
+  Future<double> getTotalAmount() async {
+    final dbClient = await db; // get reference to the database
+    final List<Map<String, dynamic>> maps =
+        await dbClient.query(tableAddData); // query all rows in the table
+
+    double totalAmount = 0;
+
+    for (final map in maps) {
+      totalAmount += map[addAmount];
+    }
+
+    return totalAmount;
+  }
+
+  Future<int> calculateTotal() async {
+    var dbClient = await db;
+    var result =
+        await dbClient.rawQuery("SELECT SUM($addAmount) FROM $tableAddData");
+    final sum = result[0]['SUM($addAmount)'] as int;
+    print(result.toList());
+    return sum;
+  }
+
   ///SnapShot Future logic
 /*
   Future<List> getAllUsers() async {

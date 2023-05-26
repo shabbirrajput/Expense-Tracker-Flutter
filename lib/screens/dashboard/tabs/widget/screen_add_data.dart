@@ -7,6 +7,7 @@ import 'package:expense_tracker/db/comHelper.dart';
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenAddData extends StatefulWidget {
@@ -124,7 +125,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        dateController.value = TextEditingValue(text: picked.toString());
+        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
+        print(formattedDate); // Output: 25/05/2023
+        dateController.value = TextEditingValue(text: formattedDate.toString());
       });
     }
   }
@@ -587,6 +590,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                       onPressed: () {
                         addData();
                         initData();
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(

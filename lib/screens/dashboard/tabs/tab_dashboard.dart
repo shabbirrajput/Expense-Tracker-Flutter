@@ -29,6 +29,13 @@ class _TabDashboardState extends State<TabDashboard> {
     "Other": 10,
   };
 
+  final colorList = <Color>[
+    AppColors.colorPrimary,
+    AppColors.colorGreen,
+    AppColors.colorRed,
+    AppColors.colorGrey,
+  ];
+
   @override
   void initState() {
     initData();
@@ -43,12 +50,25 @@ class _TabDashboardState extends State<TabDashboard> {
     setState(() {});
   }
 
+  removeData(int index) async {
+    dbHelper = DbHelper();
+    await dbHelper.deleteData(mAddDataModel[index].id!);
+    initData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Dimens.margin20),
       child: Column(
         children: [
+          /*  const SizedBox(
+            height: Dimens.margin10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text()],
+          ),*/
           const SizedBox(
             height: Dimens.margin10,
           ),
@@ -116,6 +136,18 @@ class _TabDashboardState extends State<TabDashboard> {
                                         : AppColors.colorRed),
                               ),
                             ),
+                            const SizedBox(
+                              width: 145,
+                            ),
+                            /*IconButton(
+                              onPressed: () {
+                                removeData(index);
+                              },
+                              icon: const Icon(
+                                Icons.delete_outlined,
+                                color: AppColors.colorRed,
+                              ),
+                            ),*/
                           ],
                         ),
                         const SizedBox(
@@ -174,8 +206,8 @@ class _TabDashboardState extends State<TabDashboard> {
             dataMap: dataMap,
             animationDuration: const Duration(milliseconds: 800),
             chartLegendSpacing: 32,
-            chartRadius: MediaQuery.of(context).size.width / 3.2,
-            // colorList: Colors.primaries,
+            chartRadius: MediaQuery.of(context).size.width / 2.2,
+            colorList: colorList,
             initialAngleInDegree: 0,
             chartType: ChartType.disc,
             ringStrokeWidth: 32,
