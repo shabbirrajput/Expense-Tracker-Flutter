@@ -20,6 +20,8 @@ class TabDashboard extends StatefulWidget {
 class _TabDashboardState extends State<TabDashboard> {
   late DbHelper dbHelper;
   List<AddDataModel> mAddDataModel = [];
+  dynamic totalIncome = 0;
+  dynamic totalExpense = 0;
 
   String dropDownValue = '';
   Map<String, double> dataMap = {};
@@ -45,10 +47,23 @@ class _TabDashboardState extends State<TabDashboard> {
     setState(() {});
     for (int i = 0; i < mAddDataModel.length; i++) {
       Map<String, double> tempDataMap = {
-        mAddDataModel[i].category!: 10,
+        if (mAddDataModel[i].type! == AppString.textExpense)
+          mAddDataModel[i].category!: 10,
       };
       dataMap.addAll(tempDataMap);
+      if (mAddDataModel[i].type == AppString.textIncome) {
+        setState(() {
+          totalIncome = totalIncome + mAddDataModel[i].amount!;
+        });
+        debugPrint('totalIncome = ${totalIncome + mAddDataModel[i].amount!}');
+      } else {
+        totalExpense = totalExpense + mAddDataModel[i].amount!;
+      }
     }
+    /*  for (int i = 0; i < mAddDataModel.length; i++) {
+      print('object');
+
+    }*/
   }
 
   removeData(int index) async {
@@ -79,36 +94,6 @@ class _TabDashboardState extends State<TabDashboard> {
           color: AppColors.colorWhite,
         ),
       ),
-/*      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  right: Dimens.margin10, bottom: Dimens.margin10),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ScreenAddData(
-                                onAddData: () {
-                                  initData();
-                                },
-                              )));
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(Dimens.margin20),
-                  backgroundColor: AppColors.colorPrimary,
-                  foregroundColor: AppColors.colorWhite,
-                ),
-                child: const Icon(Icons.add, color: AppColors.colorWhite),
-              ),
-            ),
-          ],
-        ),
-      ),*/
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Dimens.margin20),
@@ -116,6 +101,23 @@ class _TabDashboardState extends State<TabDashboard> {
             children: [
               const SizedBox(
                 height: Dimens.margin10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    AppString.textTotalBalance,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimens.textSize16),
+                  ),
+                  Text(
+                    "${totalIncome - totalExpense}",
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimens.textSize16),
+                  ),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -273,23 +275,25 @@ class _TabDashboardState extends State<TabDashboard> {
                           const SizedBox(
                             height: Dimens.margin10,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                AppString.textStatus,
-                                style: TextStyle(color: AppColors.colorBlack),
-                              ),
-                              Text(
-                                item.status!,
-                                style: const TextStyle(
-                                    color: AppColors.colorBlack),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: Dimens.margin10,
-                          ),
+                          if (item.paymentMethod == AppString.textCheque)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  AppString.textStatus,
+                                  style: TextStyle(color: AppColors.colorBlack),
+                                ),
+                                Text(
+                                  item.status!,
+                                  style: const TextStyle(
+                                      color: AppColors.colorBlack),
+                                ),
+                              ],
+                            ),
+                          if (item.paymentMethod == AppString.textCheque)
+                            const SizedBox(
+                              height: Dimens.margin10,
+                            ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

@@ -62,4 +62,6 @@ class AppString {
   static const textPaymentMethod = 'PaymentMethod :';
   static const textStatus = 'Status :';
   static const textNotes = 'Note :';
+  static const textCheque = 'Cheque';
+  static const textTotalBalance = 'Total Balance';
 }

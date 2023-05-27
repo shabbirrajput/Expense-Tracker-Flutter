@@ -68,9 +68,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       alertDialog("Please Select Category");
     } else if (addPaymentMethod.isEmpty) {
       alertDialog("Please Select Payment Method");
-    } else if (addStatus.isEmpty) {
+    } /* else if (addStatus.isEmpty) {
       alertDialog("Please Select Status");
-    } else if (addNote.isEmpty) {
+    }*/
+    else if (addNote.isEmpty) {
       alertDialog("Please Enter Note");
     } else {
       AddDataModel mAddDataModel = AddDataModel();
@@ -326,33 +327,34 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  /*GridView.builder(
-                                shrinkWrap: true,
-                                physics: const ScrollPhysics(),
-                                itemCount: mAddDataModel.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 4,
-                                        crossAxisSpacing: 4.0,
-                                        mainAxisSpacing: 4.0),
-                                itemBuilder:
-                                    (BuildContext context, int index) {
-                                  AddDataModel item = mAddDataModel[index];
-                                  print('Length---> ${mAddDataModel.length}');
-                                  debugPrint(
-                                      'object ---> ${mAddDataModel[index].addDataUserId}');
-
-                                  return Column(
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.category)),
-                                      Text(item.category!),
-                                    ],
-                                  );
-                                },
-                              ),*/
                                   GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    itemCount: mAddDataModel.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 4,
+                                            crossAxisSpacing: 4.0,
+                                            mainAxisSpacing: 4.0),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      AddDataModel item = mAddDataModel[index];
+                                      print(
+                                          'Length---> ${mAddDataModel.length}');
+                                      debugPrint(
+                                          'object ---> ${mAddDataModel[index].addDataUserId}');
+
+                                      return Column(
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {},
+                                              icon: const Icon(Icons.category)),
+                                          Text(item.category!),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  /*GridView.builder(
                                     shrinkWrap: true,
                                     physics: const ScrollPhysics(),
                                     itemCount: mAddDataModel.length,
@@ -389,7 +391,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                         );
                                       });
                                     },
-                                  ),
+                                  ),*/
                                   /* const SizedBox(
                                 height: Dimens.margin20,
                               ),*/
@@ -415,7 +417,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                           });
                         },*/
                         enabled: false,
-                        // controller: categoryController,
+                        controller: categoryController,
                         keyboardType: TextInputType.multiline,
                         style: const TextStyle(color: AppColors.colorBlack),
                         decoration: InputDecoration(
@@ -554,47 +556,48 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin18,
               ),
-              FormField<String>(
-                builder: (FormFieldState<String> state) {
-                  return InputDecorator(
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.colorWhite2,
-                      border: InputBorder.none,
-                      hintText: AppString.textSelectCategory,
-                      hintStyle: TextStyle(
-                          color: AppColors.colorGrey,
-                          fontWeight: FontWeight.w500),
-                      prefixIcon: Icon(
-                        Icons.auto_graph_outlined,
-                        color: AppColors.colorPrimary,
+              if (paymentController.text == AppString.textCheque)
+                FormField<String>(
+                  builder: (FormFieldState<String> state) {
+                    return InputDecorator(
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: AppColors.colorWhite2,
+                        border: InputBorder.none,
+                        hintText: AppString.textSelectCategory,
+                        hintStyle: TextStyle(
+                            color: AppColors.colorGrey,
+                            fontWeight: FontWeight.w500),
+                        prefixIcon: Icon(
+                          Icons.auto_graph_outlined,
+                          color: AppColors.colorPrimary,
+                        ),
                       ),
-                    ),
-                    // isEmpty: dropDownValueType == '',
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: dropDownValueStatus.isNotEmpty
-                            ? dropDownValueStatus
-                            : null,
-                        hint: const Text(AppString.textSelectStatus),
-                        isDense: true,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropDownValueStatus = newValue!;
-                            state.didChange(newValue);
-                          });
-                        },
-                        items: itemSelectStatusList.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                      // isEmpty: dropDownValueType == '',
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: dropDownValueStatus.isNotEmpty
+                              ? dropDownValueStatus
+                              : null,
+                          hint: const Text(AppString.textSelectStatus),
+                          isDense: true,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropDownValueStatus = newValue!;
+                              state.didChange(newValue);
+                            });
+                          },
+                          items: itemSelectStatusList.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
               const SizedBox(
                 height: Dimens.margin18,
               ),
