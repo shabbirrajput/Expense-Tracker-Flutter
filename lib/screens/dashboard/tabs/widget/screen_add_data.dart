@@ -321,9 +321,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                       showModalBottomSheet<void>(
                         context: context,
                         builder: (BuildContext context) {
-                          return SizedBox(
-                            height: Dimens.margin600,
-                            child: Center(
+                          return Center(
+                            child: SizedBox(
+                              height: Dimens.margin600,
                               child: SingleChildScrollView(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -445,47 +445,44 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                         builder: (BuildContext context) {
                           return SizedBox(
                             height: Dimens.margin600,
-                            child: Center(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    GridView.builder(
-                                      shrinkWrap: true,
-                                      physics: const ScrollPhysics(),
-                                      itemCount: mAddDataModel.length,
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              crossAxisSpacing: 4.0,
-                                              mainAxisSpacing: 4.0),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        AddDataModel item =
-                                            mAddDataModel[index];
-                                        print(
-                                            'Length---> ${mAddDataModel.length}');
-                                        debugPrint(
-                                            'object ---> ${mAddDataModel[index].addDataUserId}');
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: const ScrollPhysics(),
+                                    itemCount: mAddDataModel.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 3,
+                                            crossAxisSpacing: 4.0,
+                                            mainAxisSpacing: 4.0),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      AddDataModel item = mAddDataModel[index];
+                                      print(
+                                          'Length---> ${mAddDataModel.length}');
+                                      debugPrint(
+                                          'object ---> ${mAddDataModel[index].addDataUserId}');
 
-                                        return Column(
-                                          children: [
-                                            IconButton(
-                                                onPressed: () {
-                                                  paymentController.text =
-                                                      item.paymentMethod!;
-                                                  Navigator.pop(context);
-                                                  setState(() {});
-                                                },
-                                                icon: const Icon(
-                                                    Icons.payment_outlined)),
-                                            Text(item.paymentMethod!),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                      return Column(
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                paymentController.text =
+                                                    item.paymentMethod!;
+                                                Navigator.pop(context);
+                                                setState(() {});
+                                              },
+                                              icon: const Icon(
+                                                  Icons.payment_outlined)),
+                                          Text(item.paymentMethod!),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           );

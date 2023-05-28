@@ -23,6 +23,7 @@ class _TabDashboardState extends State<TabDashboard> {
   List<AddDataModel> mAddDataModel = [];
   dynamic totalIncome = 0;
   dynamic totalExpense = 0;
+  int totalAmount = 0;
 
   String dropDownValue = '';
   Map<String, double> dataMap = {};
@@ -45,29 +46,30 @@ class _TabDashboardState extends State<TabDashboard> {
     dbHelper = DbHelper();
     mAddDataModel =
         await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
-    setState(() {});
     for (int i = 0; i < mAddDataModel.length; i++) {
       Map<String, double> tempDataMap = {
         if (mAddDataModel[i].type! == AppString.textExpense)
           mAddDataModel[i].category!: 10,
       };
       dataMap.addAll(tempDataMap);
+
       if (mAddDataModel[i].type == AppString.textIncome) {
         totalIncome = totalIncome + mAddDataModel[i].amount!;
       } else {
         totalExpense = totalExpense + mAddDataModel[i].amount!;
       }
     }
-    /*  for (int i = 0; i < mAddDataModel.length; i++) {
-      print('object');
-
-    }*/
+    totalAmount = totalIncome - totalExpense;
+    setState(() {});
   }
 
   removeData(int index) async {
     dbHelper = DbHelper();
     await dbHelper.deleteData(mAddDataModel[index].id!);
+    totalIncome = 0;
+    totalExpense = 0;
     initData();
+    setState(() {});
   }
 
   @override
@@ -80,6 +82,8 @@ class _TabDashboardState extends State<TabDashboard> {
             MaterialPageRoute(
               builder: (context) => ScreenAddData(
                 onAddData: () {
+                  totalIncome = 0;
+                  totalExpense = 0;
                   initData();
                 },
               ),
@@ -110,7 +114,7 @@ class _TabDashboardState extends State<TabDashboard> {
                         fontSize: Dimens.textSize16),
                   ),
                   Text(
-                    "${totalIncome - totalExpense}",
+                    "${totalAmount}",
                     style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: Dimens.textSize16),
@@ -193,10 +197,10 @@ class _TabDashboardState extends State<TabDashboard> {
                           onPressed: (i) {
                             removeData(index);
                           },
-                          backgroundColor: Color(0xFFFE4A49),
-                          foregroundColor: Colors.white,
+                          backgroundColor: AppColors.colorRed,
+                          foregroundColor: AppColors.colorWhite,
                           icon: Icons.delete,
-                          label: 'Delete',
+                          label: AppString.textDelete,
                         ),
                         /* SlidableAction(
                           onPressed: () {},

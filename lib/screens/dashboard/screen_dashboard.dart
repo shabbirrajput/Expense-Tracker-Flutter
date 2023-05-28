@@ -89,7 +89,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           const SizedBox(
             height: Dimens.margin100,
           ),
-          ListTile(
+/*          ListTile(
             leading: IconButton(
               color: AppColors.colorPrimary,
               onPressed: () {},
@@ -115,7 +115,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
               _onItemTapped(1);
               Navigator.pop(context);
             },
-          ),
+          ),*/
           ListTile(
             leading: IconButton(
               color: AppColors.colorPrimary,
@@ -142,24 +142,24 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
         home: DefaultTabController(
           length: 2,
           child: Scaffold(
-            key: scaffoldKey,
-            appBar: AppBar(
-              title: Text(
-                selectedIndex == 0
-                    ? AppString.textDashboard
-                    : AppString.textHistory,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              leading: IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  if (scaffoldKey.currentState!.isDrawerOpen) {
-                    scaffoldKey.currentState!.openEndDrawer();
-                  } else {
-                    scaffoldKey.currentState!.openDrawer();
-                  }
-                },
-              ),
+              key: scaffoldKey,
+              appBar: AppBar(
+                title: Text(
+                  selectedIndex == 0
+                      ? AppString.textDashboard
+                      : AppString.textHistory,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+                leading: IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    if (scaffoldKey.currentState!.isDrawerOpen) {
+                      scaffoldKey.currentState!.openEndDrawer();
+                    } else {
+                      scaffoldKey.currentState!.openDrawer();
+                    }
+                  },
+                ),
 /*              actions: [
                 if (selectedIndex == 0)
                   IconButton(
@@ -171,37 +171,41 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                       },
                       icon: const Icon(Icons.history))
               ],*/
-              backgroundColor: AppColors.colorPrimary,
-              automaticallyImplyLeading: false,
+                backgroundColor: AppColors.colorPrimary,
+                automaticallyImplyLeading: false,
 /*              bottom: const TabBar(
                 tabs: [
                   Tab(text: AppString.textIncome),
                   Tab(text: AppString.textExpense)
                 ],
               ),*/
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.attach_money_outlined),
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                        icon: Icon(Icons.attach_money_outlined),
+                        backgroundColor: AppColors.colorPrimary,
+                        label: AppString.textDashboard),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.history),
                       backgroundColor: AppColors.colorPrimary,
-                      label: AppString.textDashboard),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.history),
-                    backgroundColor: AppColors.colorPrimary,
-                    label: AppString.textHistory,
-                  ),
-                ],
-                type: BottomNavigationBarType.shifting,
-                currentIndex: selectedIndex,
-                selectedItemColor: selectedIndex == 0
-                    ? AppColors.colorBlack
-                    : AppColors.colorBlack,
-                iconSize: Dimens.margin40,
-                onTap: _onItemTapped,
-                elevation: Dimens.margin5),
-            drawer: drawer,
-            body: IndexedStack(
+                      label: AppString.textHistory,
+                    ),
+                  ],
+                  type: BottomNavigationBarType.shifting,
+                  currentIndex: selectedIndex,
+                  selectedItemColor: selectedIndex == 0
+                      ? AppColors.colorBlack
+                      : AppColors.colorBlack,
+                  iconSize: Dimens.margin40,
+                  onTap: _onItemTapped,
+                  elevation: Dimens.margin5),
+              drawer: drawer,
+              body: selectedIndex == 0
+                  ? const TabDashboard()
+                  : ScreenHistory(
+                      onAddData: () {},
+                    ) /*IndexedStack(
               index: selectedIndex,
               children: [
                 const TabDashboard(),
@@ -211,15 +215,15 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                   },
                 )
               ],
-            ),
+            ),*/
 
-            /* const TabBarView(
+              /* const TabBarView(
               children: [
                 TabIncome(),
                 TabExpense(),
               ],
             ),*/
-            /*IndexedStack(
+              /*IndexedStack(
               index: selectedIndex,
               children: [
                 ScreenDashboard(
@@ -234,7 +238,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                 const ScreenHistory(),
               ],
             ),*/
-          ),
+              ),
         ),
       ),
     );

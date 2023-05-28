@@ -21,6 +21,7 @@ class _ScreenHistoryState extends State<ScreenHistory> {
 
   @override
   void initState() {
+    print('In init data');
     initData();
     super.initState();
   }
@@ -31,6 +32,8 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     mAddDataModel =
         await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
     setState(() {});
+    print('objectHistory');
+    print('object lrngth ${mAddDataModel.length}');
   }
 
   @override
