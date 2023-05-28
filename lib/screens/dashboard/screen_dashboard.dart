@@ -1,6 +1,9 @@
 import 'package:expense_tracker/core/app_color.dart';
+import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
 import 'package:expense_tracker/core/app_string.dart';
+import 'package:expense_tracker/db/db_helper.dart';
+import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:expense_tracker/db/navigator_key.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:expense_tracker/screens/dashboard/tabs/tab_dashboard.dart';
@@ -19,6 +22,41 @@ class ScreenDashboard extends StatefulWidget {
 class _ScreenDashboardState extends State<ScreenDashboard> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedIndex = 0;
+  late DbHelper dbHelper;
+  List<AddDataModel> mAddDataModel = [];
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  void initData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    dbHelper = DbHelper();
+    mAddDataModel =
+        await dbHelper.getAddedData(sp.getString(AppConfig.textUserId));
+    setState(() {});
+    /*for (int i = 0; i < mAddDataModel.length; i++) {
+      Map<String, double> tempDataMap = {
+        if (mAddDataModel[i].type! == AppString.textExpense)
+          mAddDataModel[i].category!: 10,
+      };
+      dataMap.addAll(tempDataMap);
+      if (mAddDataModel[i].type == AppString.textIncome) {
+        setState(() {
+          totalIncome = totalIncome + mAddDataModel[i].amount!;
+        });
+        debugPrint('totalIncome = ${totalIncome + mAddDataModel[i].amount!}');
+      } else {
+        totalExpense = totalExpense + mAddDataModel[i].amount!;
+      }
+    }*/
+    /*  for (int i = 0; i < mAddDataModel.length; i++) {
+      print('object');
+
+    }*/
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -165,7 +203,14 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
             drawer: drawer,
             body: IndexedStack(
               index: selectedIndex,
-              children: const [TabDashboard(), ScreenHistory()],
+              children: [
+                const TabDashboard(),
+                ScreenHistory(
+                  onAddData: () {
+                    initData();
+                  },
+                )
+              ],
             ),
 
             /* const TabBarView(

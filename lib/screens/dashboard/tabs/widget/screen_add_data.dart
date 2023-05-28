@@ -324,84 +324,45 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                           return SizedBox(
                             height: Dimens.margin600,
                             child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: const ScrollPhysics(),
-                                    itemCount: mAddDataModel.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            crossAxisSpacing: 4.0,
-                                            mainAxisSpacing: 4.0),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      AddDataModel item = mAddDataModel[index];
-                                      print(
-                                          'Length---> ${mAddDataModel.length}');
-                                      debugPrint(
-                                          'object ---> ${mAddDataModel[index].addDataUserId}');
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: const ScrollPhysics(),
+                                      itemCount: mAddDataModel.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 4,
+                                              crossAxisSpacing: 4.0,
+                                              mainAxisSpacing: 4.0),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        AddDataModel item =
+                                            mAddDataModel[index];
+                                        print(
+                                            'Length---> ${mAddDataModel.length}');
+                                        debugPrint(
+                                            'object ---> ${mAddDataModel[index].addDataUserId}');
 
-                                      return Column(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(Icons.category)),
-                                          Text(item.category!),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                  /*GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: const ScrollPhysics(),
-                                    itemCount: mAddDataModel.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            crossAxisSpacing: 4.0,
-                                            mainAxisSpacing: 4.0),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      AddDataModel item = mAddDataModel[index];
-                                      return GestureDetector(onTap: () {
-                                        // Get the index of the selected item.
-                                        final selectedIndex = index;
-
-                                        // Pass the index to the bottom sheet text field.
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) {
-                                              return Column(
-                                                children: [
-                                                  Text(
-                                                    '$selectedIndex',
-                                                  ),
-                                                  IconButton(
-                                                      onPressed: () {},
-                                                      icon: const Icon(
-                                                          Icons.category)),
-                                                  Text(item.category!),
-                                                ],
-                                              );
-                                            },
-                                          ),
+                                        return Column(
+                                          children: [
+                                            IconButton(
+                                                onPressed: () {
+                                                  categoryController.text =
+                                                      item.category!;
+                                                  Navigator.pop(context);
+                                                },
+                                                icon:
+                                                    const Icon(Icons.category)),
+                                            Text(item.category!),
+                                          ],
                                         );
-                                      });
-                                    },
-                                  ),*/
-                                  /* const SizedBox(
-                                height: Dimens.margin20,
-                              ),*/
-                                  /* IconButton(
-                                onPressed: () {
-                                  showAlertDialogCategory(context);
-                                },
-                                icon: const Icon(Icons.add),
-                              ),*/
-                                ],
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -411,11 +372,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     child: SizedBox(
                       width: Dimens.margin280,
                       child: TextFormField(
-                        /* onChanged: (value) {
-                          setState(() {
-                            newCategoryName = value;
-                          });
-                        },*/
                         enabled: false,
                         controller: categoryController,
                         keyboardType: TextInputType.multiline,
@@ -490,38 +446,46 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                           return SizedBox(
                             height: Dimens.margin600,
                             child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  GridView.builder(
-                                    shrinkWrap: true,
-                                    physics: const ScrollPhysics(),
-                                    itemCount: mAddDataModel.length,
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            crossAxisSpacing: 4.0,
-                                            mainAxisSpacing: 4.0),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      AddDataModel item = mAddDataModel[index];
-                                      print(
-                                          'Length---> ${mAddDataModel.length}');
-                                      debugPrint(
-                                          'object ---> ${mAddDataModel[index].addDataUserId}');
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: const ScrollPhysics(),
+                                      itemCount: mAddDataModel.length,
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 4.0,
+                                              mainAxisSpacing: 4.0),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        AddDataModel item =
+                                            mAddDataModel[index];
+                                        print(
+                                            'Length---> ${mAddDataModel.length}');
+                                        debugPrint(
+                                            'object ---> ${mAddDataModel[index].addDataUserId}');
 
-                                      return Column(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(
-                                                  Icons.payment_outlined)),
-                                          Text(item.paymentMethod!),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ],
+                                        return Column(
+                                          children: [
+                                            IconButton(
+                                                onPressed: () {
+                                                  paymentController.text =
+                                                      item.paymentMethod!;
+                                                  Navigator.pop(context);
+                                                  setState(() {});
+                                                },
+                                                icon: const Icon(
+                                                    Icons.payment_outlined)),
+                                            Text(item.paymentMethod!),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

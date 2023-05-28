@@ -52,9 +52,7 @@ class _TabDashboardState extends State<TabDashboard> {
       };
       dataMap.addAll(tempDataMap);
       if (mAddDataModel[i].type == AppString.textIncome) {
-        setState(() {
-          totalIncome = totalIncome + mAddDataModel[i].amount!;
-        });
+        totalIncome = totalIncome + mAddDataModel[i].amount!;
         debugPrint('totalIncome = ${totalIncome + mAddDataModel[i].amount!}');
       } else {
         totalExpense = totalExpense + mAddDataModel[i].amount!;
