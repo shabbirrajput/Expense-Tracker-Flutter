@@ -7,7 +7,7 @@ import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:expense_tracker/db/navigator_key.dart';
 import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:expense_tracker/screens/dashboard/tabs/tab_dashboard.dart';
-import 'package:expense_tracker/screens/history/screen_history.dart';
+import 'package:expense_tracker/screens/dashboard/tabs/tab_history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

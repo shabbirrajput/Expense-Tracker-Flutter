@@ -1,9 +1,10 @@
+import 'dart:io' as io;
+
 import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:expense_tracker/db/models/user_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'dart:io' as io;
 
 class DbHelper {
   late Database _db;
@@ -106,8 +107,18 @@ class DbHelper {
         .rawDelete('DELETE FROM $tableAddData WHERE $addId = ?', [id]);
   }
 
+  ///Get Filter
+  Future<int?> getFilter(int date) async {
+    var dbClient = await db;
+    final result = await dbClient.rawQuery(
+      'SELECT * SUM($addAmount) FROM $tableAddData WHERE $addDate >= ? and $addDate <= ?',
+      [01 / 01 / 2023, 31 / 12 / 2023],
+    ).then(Sqflite.firstIntValue);
+    return result;
+  }
+
   ///Get Total Amount
-  Future<double> getTotalAmount() async {
+/* Future<double> getTotalAmount() async {
     final dbClient = await db; // get reference to the database
     final List<Map<String, dynamic>> maps =
         await dbClient.query(tableAddData); // query all rows in the table
@@ -128,7 +139,7 @@ class DbHelper {
     final sum = result[0]['SUM($addAmount)'] as int;
     print(result.toList());
     return sum;
-  }
+  }*/
 
   ///SnapShot Future logic
 /*
@@ -141,7 +152,7 @@ class DbHelper {
   }
 */
 
-  ///Get Added Data
+///Get Added Data
 /*  Future<AddDataModel> getCartProduct(String? addDataId, int? userId) async {
     var dbClient = await db;
     var res = await dbClient.rawQuery("SELECT * FROM $tableAddData WHERE "

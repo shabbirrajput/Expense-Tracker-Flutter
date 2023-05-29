@@ -31,6 +31,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
   final TextEditingController noteController = TextEditingController();
   late DbHelper dbHelper;
   List<AddDataModel> mAddDataModel = [];
+  String dropDownValueType = '';
+  String dropDownValueStatus = '';
 
   @override
   void initState() {
@@ -68,7 +70,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       alertDialog("Please Select Category");
     } else if (addPaymentMethod.isEmpty) {
       alertDialog("Please Select Payment Method");
-    } /* else if (addStatus.isEmpty) {
+    }
+    /*else if (addStatus.isEmpty && addPaymentMethod == AppString.textCheque) {
       alertDialog("Please Select Status");
     }*/
     else if (addNote.isEmpty) {
@@ -85,12 +88,10 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       mAddDataModel.status = addStatus;
       mAddDataModel.note = addNote;
       mAddDataModel.addDataUserId = sp.getString(AppConfig.textUserId);
-      print('AddData ---> $mAddDataModel');
 
       dbHelper = DbHelper();
       await dbHelper.saveAddData(mAddDataModel).then((addData) {
         widget.onAddData();
-        print({mAddDataModel.id});
       }).catchError((error) {
         alertDialog("Error: Data Save Fail--$error");
       });
@@ -127,7 +128,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
       setState(() {
         selectedDate = picked;
         String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
-        print(formattedDate); // Output: 25/05/2023
+        // Output: 25/05/2023
         dateController.value = TextEditingValue(text: formattedDate.toString());
       });
     }
@@ -167,9 +168,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     }
   }
 
-  String dropDownValueType = '';
-  String dropDownValueStatus = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -189,16 +187,14 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               const SizedBox(
                 height: Dimens.margin24,
               ),
-              const SizedBox(
-                height: Dimens.margin24,
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
                     onTap: () => _selectDate(context),
                     child: SizedBox(
-                      width: 180,
+                      height: SizeConfig().heightSize(context, 6.0),
+                      width: SizeConfig().widthSize(context, 45.0),
                       child: TextFormField(
                         enabled: false,
                         controller: dateController,
@@ -223,7 +219,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   InkWell(
                     onTap: () => _selectTime(context),
                     child: SizedBox(
-                      width: 150,
+                      height: SizeConfig().heightSize(context, 6.0),
+                      width: SizeConfig().widthSize(context, 42.0),
                       child: TextFormField(
                         enabled: false,
                         controller: timeController,
@@ -296,24 +293,21 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  /*IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.add,
-                      color: AppColors.colorPrimary,
-                    ),
-                  ),*/
-                  ElevatedButton(
-                    onPressed: () {
-                      showAlertDialogCategory(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: AppColors.colorWhite),
-                    child: const Icon(
-                      Icons.add,
-                      color: AppColors.colorPrimary,
-                      size: Dimens.margin20,
+                  SizedBox(
+                    height: SizeConfig().heightSize(context, 6.0),
+                    width: SizeConfig().widthSize(context, 12),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showAlertDialogCategory(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: AppColors.colorWhite),
+                      child: const Icon(
+                        Icons.add,
+                        color: AppColors.colorPrimary,
+                        size: Dimens.margin20,
+                      ),
                     ),
                   ),
                   InkWell(
@@ -341,8 +335,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                           (BuildContext context, int index) {
                                         AddDataModel item =
                                             mAddDataModel[index];
-                                        print(
-                                            'Length---> ${mAddDataModel.length}');
                                         debugPrint(
                                             'object ---> ${mAddDataModel[index].addDataUserId}');
 
@@ -370,7 +362,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                       );
                     },
                     child: SizedBox(
-                      width: Dimens.margin280,
+                      height: SizeConfig().heightSize(context, 6.0),
+                      width: SizeConfig().widthSize(context, 70.0),
                       child: TextFormField(
                         enabled: false,
                         controller: categoryController,
@@ -425,17 +418,21 @@ class _ScreenAddDataState extends State<ScreenAddData> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      showAlertDialogPayment(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        backgroundColor: AppColors.colorWhite),
-                    child: const Icon(
-                      Icons.add,
-                      color: AppColors.colorPrimary,
-                      size: Dimens.margin20,
+                  SizedBox(
+                    height: SizeConfig().heightSize(context, 6.0),
+                    width: SizeConfig().widthSize(context, 12.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showAlertDialogPayment(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: AppColors.colorWhite),
+                      child: const Icon(
+                        Icons.add,
+                        color: AppColors.colorPrimary,
+                        size: Dimens.margin20,
+                      ),
                     ),
                   ),
                   InkWell(
@@ -461,8 +458,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       AddDataModel item = mAddDataModel[index];
-                                      print(
-                                          'Length---> ${mAddDataModel.length}');
                                       debugPrint(
                                           'object ---> ${mAddDataModel[index].addDataUserId}');
 
@@ -490,7 +485,8 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                       );
                     },
                     child: SizedBox(
-                      width: Dimens.margin280,
+                      height: SizeConfig().heightSize(context, 6.0),
+                      width: SizeConfig().widthSize(context, 70.0),
                       child: TextFormField(
                         enabled: false,
                         controller: paymentController,
@@ -513,9 +509,6 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(
-                height: Dimens.margin18,
               ),
               if (paymentController.text == AppString.textCheque)
                 FormField<String>(
@@ -585,10 +578,11 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                 height: Dimens.margin20,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    height: Dimens.margin46,
-                    width: Dimens.margin170,
+                    height: SizeConfig().heightSize(context, 6.0),
+                    width: SizeConfig().widthSize(context, 42.0),
                     child: OutlinedButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -605,12 +599,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    width: Dimens.margin8,
-                  ),
                   SizedBox(
-                    height: Dimens.margin46,
-                    width: Dimens.margin170,
+                    height: SizeConfig().heightSize(context, 6.0),
+                    width: SizeConfig().widthSize(context, 42.0),
                     child: ElevatedButton(
                       onPressed: () {
                         addData();
@@ -631,6 +622,9 @@ class _ScreenAddDataState extends State<ScreenAddData> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: Dimens.margin18,
+              )
             ],
           ),
         ),

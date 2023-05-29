@@ -1,6 +1,6 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/db/navigator_key.dart';
-import 'package:expense_tracker/screens/dashboard/screen_dashboard.dart';
+import 'package:expense_tracker/screens/auth/screen_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.colorPrimary),
         useMaterial3: true,
       ),
-      home: const ScreenDashboard(),
+      home: const ScreenLogin(),
       navigatorKey: NavigatorKey.navigatorKey,
     );
   }

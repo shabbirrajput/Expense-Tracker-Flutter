@@ -1,7 +1,6 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
-import 'package:expense_tracker/core/app_list.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/db/models/add_data_model.dart';
@@ -25,7 +24,6 @@ class _TabDashboardState extends State<TabDashboard> {
   dynamic totalExpense = 0;
   int totalAmount = 0;
 
-  String dropDownValue = '';
   Map<String, double> dataMap = {};
 
   final colorList = <Color>[
@@ -52,6 +50,7 @@ class _TabDashboardState extends State<TabDashboard> {
           mAddDataModel[i].category!: 10,
       };
       dataMap.addAll(tempDataMap);
+      setState(() {});
 
       if (mAddDataModel[i].type == AppString.textIncome) {
         totalIncome = totalIncome + mAddDataModel[i].amount!;
@@ -114,36 +113,12 @@ class _TabDashboardState extends State<TabDashboard> {
                         fontSize: Dimens.textSize16),
                   ),
                   Text(
-                    "${totalAmount}",
+                    "\$ $totalAmount",
                     style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: Dimens.textSize16),
                   ),
                 ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  DropdownButton(
-                    value: dropDownValue.isNotEmpty ? dropDownValue : null,
-                    icon: const Icon(Icons.arrow_drop_down),
-                    hint: const Text(AppString.textSelectMonth),
-                    items: itemMonthList.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text(items),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropDownValue = newValue!;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: Dimens.margin10,
               ),
               if (dataMap.isNotEmpty)
                 PieChart(
@@ -183,7 +158,6 @@ class _TabDashboardState extends State<TabDashboard> {
                 shrinkWrap: true,
                 itemCount: mAddDataModel.length,
                 itemBuilder: (context, index) {
-                  print('object ---> ${mAddDataModel.length}');
                   AddDataModel item = mAddDataModel[index];
                   return Slidable(
                     key: UniqueKey(),
@@ -283,7 +257,8 @@ class _TabDashboardState extends State<TabDashboard> {
                                         : AppColors.colorRed),
                               ),
 
-                              */ /*IconButton(
+                              */
+                  /*IconButton(
                                 onPressed: () {
                                   removeData(index);
                                 },
@@ -291,7 +266,8 @@ class _TabDashboardState extends State<TabDashboard> {
                                   Icons.delete_outlined,
                                   color: AppColors.colorRed,
                                 ),
-                              ),*/ /*
+                              ),*/
+                  /*
                             ],
                           ),
                           const SizedBox(

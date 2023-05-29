@@ -39,6 +39,7 @@ class AppString {
   static const textIncome = 'Income';
   static const textExpense = 'Expense';
   static const textSelectDate = 'Select Date';
+  static const textSelectYear = 'Select Year';
   static const textSelectTime = 'Select Time';
   static const textAddIncomeOrExpense = 'Add Income/Expense';
   static const textSelectType = 'Select Type';

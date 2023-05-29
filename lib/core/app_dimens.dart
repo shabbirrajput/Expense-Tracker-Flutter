@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// > A class that contains all the dimensions used in the app
 class Dimens {
   static const double margin0 = 0;
@@ -539,4 +541,16 @@ class Dimens {
   static const double textSize49 = 49;
   static const double textSize50 = 50;
   static const double textSize75 = 75;
+}
+
+class SizeConfig {
+  double heightSize(BuildContext context, double value) {
+    value /= 100;
+    return MediaQuery.of(context).size.height * value;
+  }
+
+  double widthSize(BuildContext context, double value) {
+    value /= 100;
+    return MediaQuery.of(context).size.width * value;
+  }
 }

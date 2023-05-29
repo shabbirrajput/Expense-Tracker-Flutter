@@ -98,7 +98,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
       alertDialog(
           "Please Enter Strong Password\n\nHint : Password must contain Upper/Lower case, number and special character");
     } else {
-      alertDialog("Login Successfully");
+      Utils().toastMessage("Login in Process...");
       /*await dbHelper.getLoginUser(email, passwd).then((userData) {
         if (userData != null && userData.email != null) {
           setSP(userData).whenComplete(() {
