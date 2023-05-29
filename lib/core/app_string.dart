@@ -66,4 +66,5 @@ class AppString {
   static const textCheque = 'Cheque';
   static const textTotalBalance = 'Total Balance';
   static const textDelete = 'Delete';
+  static const textDate = 'date';
 }

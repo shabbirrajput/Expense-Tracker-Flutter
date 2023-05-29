@@ -127,7 +127,7 @@ class _ScreenAddDataState extends State<ScreenAddData> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
+        String formattedDate = DateFormat('yyyy/MM/dd').format(picked);
         // Output: 25/05/2023
         dateController.value = TextEditingValue(text: formattedDate.toString());
       });

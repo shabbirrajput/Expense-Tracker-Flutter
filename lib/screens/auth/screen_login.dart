@@ -29,7 +29,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
   TextEditingController passwordController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  var dbHelper;
+  late DbHelper dbHelper;
 
   @override
   void initState() {

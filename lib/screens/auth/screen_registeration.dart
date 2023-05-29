@@ -24,7 +24,7 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-  var dbHelper;
+  late DbHelper dbHelper;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -47,14 +47,6 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
     String passwd = passwordController.text;
     String cPasswd = confirmPasswordController.text;
 
-/*    bool isExist = false;
-    if (email.isNotEmpty) {
-      await dbHelper.getCheckEmailUser(email).then((userData) {
-        if (userData != null && userData.email != null) {
-          isExist = true;
-        }
-      });
-    }*/
     if (name.isEmpty) {
       alertDialog("Please Enter Name");
     } else if (email.isEmpty) {
@@ -112,11 +104,9 @@ class _ScreenRegisterationState extends State<ScreenRegisteration> {
       dbHelper = DbHelper();
       await dbHelper.saveUserData(uModel).then((userData) {
         alertDialog("Successfully Saved");
-        print('Data Saved');
         Navigator.push(
             context, MaterialPageRoute(builder: (_) => const ScreenLogin()));
       }).catchError((error) {
-        print('Data NOT Saved');
         alertDialog("Error: Data Save Fail--$error");
       });
     }

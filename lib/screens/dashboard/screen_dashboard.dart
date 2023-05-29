@@ -203,9 +203,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
               drawer: drawer,
               body: selectedIndex == 0
                   ? const TabDashboard()
-                  : ScreenHistory(
-                      onAddData: () {},
-                    ) /*IndexedStack(
+                  : const ScreenHistory() /*IndexedStack(
               index: selectedIndex,
               children: [
                 const TabDashboard(),

@@ -170,6 +170,7 @@ class _TabDashboardState extends State<TabDashboard> {
                         SlidableAction(
                           onPressed: (i) {
                             removeData(index);
+                            setState(() {});
                           },
                           backgroundColor: AppColors.colorRed,
                           foregroundColor: AppColors.colorWhite,

@@ -87,7 +87,6 @@ class DbHelper {
   ///Get Added Data
   Future<List<AddDataModel>> getAddedData(String? userId) async {
     var dbClient = await db;
-    print('user id ---> $userId');
     var res = await dbClient.rawQuery(
         "SELECT * FROM $tableAddData WHERE $addDataUserId = ?", [userId]);
     try {
@@ -108,14 +107,41 @@ class DbHelper {
   }
 
   ///Get Filter
-  Future<int?> getFilter(int date) async {
+
+/*  Future<List<AddDataModel>?> getFilter(String date) async {
     var dbClient = await db;
+
+    String sql = 'SELECT * FROM $tableAddData WHERE $addDate = ?';
+    var res = await dbClient.rawQuery(sql, [date]);
+    List<AddDataModel> obj =
+        res.isNotEmpty ? res.map((c) => AddDataModel.fromJson(c)).toList() : [];
+    return obj.isNotEmpty ? obj : null;
+  } */
+
+  ///FILTER QUERY USING LIKE
+/*  Future<List<Map<String, Object?>>> getFilter(String date) async {
+    var dbClient = await db;
+    var res = await dbClient
+        .rawQuery('SELECT * FROM $tableAddData WHERE $addDate LIKE '$date%'');
+    return res;
+  }*/
+
+/*  Future<List> getFilter(String date) async {
+    var dbClient = await db;
+    var result = await dbClient.query(
+      tableAddData,
+      where: '$addDate >= ? and $addDate <= ?',
+      whereArgs: [01 / 01 / 2023, 31 / 12 / 2023],
+    ).then((data) => data.map(_fromMap).toList());
+    return result;
+  }*/
+
+/*    var dbClient = await db;
     final result = await dbClient.rawQuery(
       'SELECT * SUM($addAmount) FROM $tableAddData WHERE $addDate >= ? and $addDate <= ?',
       [01 / 01 / 2023, 31 / 12 / 2023],
     ).then(Sqflite.firstIntValue);
-    return result;
-  }
+    return result;*/
 
   ///Get Total Amount
 /* Future<double> getTotalAmount() async {
