@@ -59,7 +59,7 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     if (picked != null && picked != selectedMonth) {
       setState(() {
         selectedMonth = picked;
-        String formattedDate = DateFormat('MM').format(picked);
+        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
         monthController.value =
             TextEditingValue(text: formattedDate.toString());
       });
@@ -97,7 +97,7 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     if (picked != null && picked != selectedYear) {
       setState(() {
         selectedYear = picked;
-        String formattedDate = DateFormat('yyyy').format(picked);
+        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
         // Output: 25/05/2023
         yearController.value = TextEditingValue(text: formattedDate.toString());
       });
@@ -105,6 +105,53 @@ class _ScreenHistoryState extends State<ScreenHistory> {
   }
 
   void getFilteredData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    dbHelper = DbHelper();
+    mAddDataModel = await dbHelper
+        .getAddedData(sp.getString(AppConfig.textUserId))
+        .then((value) {
+      for (int i = 0; i < mAddDataModel.length; i++) {
+        String mDate = mAddDataModel[i].date!;
+        print('SPLIT month --> $mDate');
+        if (monthController.text == mDate) {
+          dbHelper.getFiltered(mDate).then((value) {
+            setState(() {});
+          });
+          print('monthController ${monthController.text}');
+        } else {
+          setState(() {});
+          print('Error');
+        }
+      }
+      return value;
+    });
+
+/*    for (int i = 0; i < mAddDataModel.length; i++) {
+      debugPrint('Date ${mAddDataModel[i].date}');
+      if (monthController.text == mAddDataModel[i].date!) {
+        print('monthController ${monthController.text}');
+      } else {
+        print('Error');
+      }
+    }*/
+  }
+
+  /* void getFilteredData() async {
+    for (int i = 0; i < mAddDataModel.length; i++) {
+      String mDate = mAddDataModel[i].date!;
+      print('SPLIT month --> $mDate');
+      if (monthController.text == mDate) {
+        dbHelper.getFilter(mDate).then((value) {
+          setState(() {});
+        });
+        print('monthController ${monthController.text}');
+      } else {
+        print('Error');
+      }
+    }
+  }*/
+
+  /*void getFilteredData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     dbHelper = DbHelper();
     mAddDataModel =
@@ -115,15 +162,15 @@ class _ScreenHistoryState extends State<ScreenHistory> {
       final monthString = DateFormat('MM').format(date);
       print('SPLIT month --> $monthString');
       if (monthController.text == mAddDataModel[i].date) {
-        dbHelper.getFilter(mAddDataModel[i].date!).then((value) {
+        */ /* dbHelper.getFilter(mAddDataModel[i].date!).then((value) {
           setState(() {});
-        });
+        });*/ /*
         print('monthController ${monthController.text}');
       } else {
         print('Error');
       }
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +189,7 @@ class _ScreenHistoryState extends State<ScreenHistory> {
                 InkWell(
                   onTap: () => _selectMonth(context).then((value) {
                     getFilteredData();
+                    setState(() {});
                   }),
                   child: SizedBox(
                     height: SizeConfig().heightSize(context, 6.0),

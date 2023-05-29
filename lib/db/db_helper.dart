@@ -87,6 +87,7 @@ class DbHelper {
   ///Get Added Data
   Future<List<AddDataModel>> getAddedData(String? userId) async {
     var dbClient = await db;
+    print('user id ---> $userId');
     var res = await dbClient.rawQuery(
         "SELECT * FROM $tableAddData WHERE $addDataUserId = ?", [userId]);
     try {
@@ -99,34 +100,33 @@ class DbHelper {
     }
   }
 
-  ///Remove Add Data Table
-  Future<int> deleteData(int id) async {
+  ///GET FILTER DATA
+  Future<List<AddDataModel>?> getFilter(String date, String id) async {
     var dbClient = await db;
-    return await dbClient
-        .rawDelete('DELETE FROM $tableAddData WHERE $addId = ?', [id]);
-  }
-
-  ///Get Filter
-
-/*  Future<List<AddDataModel>?> getFilter(String date) async {
-    var dbClient = await db;
-
     String sql = 'SELECT * FROM $tableAddData WHERE $addDate = ?';
     var res = await dbClient.rawQuery(sql, [date]);
     List<AddDataModel> obj =
         res.isNotEmpty ? res.map((c) => AddDataModel.fromJson(c)).toList() : [];
     return obj.isNotEmpty ? obj : null;
-  } */
+  }
 
-  ///FILTER QUERY USING LIKE
-/*  Future<List<Map<String, Object?>>> getFilter(String date) async {
+  Future<List<Map<String, Object?>>> getFiltered(String date) async {
     var dbClient = await db;
     var res = await dbClient
-        .rawQuery('SELECT * FROM $tableAddData WHERE $addDate LIKE '$date%'');
+        .rawQuery('SELECT * FROM $tableAddData WHERE $addDate = ?', [date]);
+    return res;
+  }
+
+  ///FILTER QUERY USING LIKE
+/*
+  Future<List<Map<String, Object?>>> getFiltered(String date) async {
+    var dbClient = await db;
+    var res = await dbClient
+        .rawQuery('SELECT * FROM $tableAddData WHERE $addDate LIKE '$%date%'');
     return res;
   }*/
 
-/*  Future<List> getFilter(String date) async {
+  /*Future<List> getFilter(String date) async {
     var dbClient = await db;
     var result = await dbClient.query(
       tableAddData,
@@ -136,15 +136,15 @@ class DbHelper {
     return result;
   }*/
 
-/*    var dbClient = await db;
-    final result = await dbClient.rawQuery(
-      'SELECT * SUM($addAmount) FROM $tableAddData WHERE $addDate >= ? and $addDate <= ?',
-      [01 / 01 / 2023, 31 / 12 / 2023],
-    ).then(Sqflite.firstIntValue);
-    return result;*/
+  ///Remove Add Data Table
+  Future<int> deleteData(int id) async {
+    var dbClient = await db;
+    return await dbClient
+        .rawDelete('DELETE FROM $tableAddData WHERE $addId = ?', [id]);
+  }
 
   ///Get Total Amount
-/* Future<double> getTotalAmount() async {
+  Future<double> getTotalAmount() async {
     final dbClient = await db; // get reference to the database
     final List<Map<String, dynamic>> maps =
         await dbClient.query(tableAddData); // query all rows in the table
@@ -165,7 +165,7 @@ class DbHelper {
     final sum = result[0]['SUM($addAmount)'] as int;
     print(result.toList());
     return sum;
-  }*/
+  }
 
   ///SnapShot Future logic
 /*
@@ -178,7 +178,7 @@ class DbHelper {
   }
 */
 
-///Get Added Data
+  ///Get Added Data
 /*  Future<AddDataModel> getCartProduct(String? addDataId, int? userId) async {
     var dbClient = await db;
     var res = await dbClient.rawQuery("SELECT * FROM $tableAddData WHERE "
