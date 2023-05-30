@@ -64,7 +64,10 @@ class AppString {
   static const textStatus = 'Status :';
   static const textNotes = 'Note :';
   static const textCheque = 'Cheque';
+  static const textAvailableBalance = 'AVAILABLE BALANCE';
   static const textTotalBalance = 'Total Balance';
+  static const textINCOME = 'INCOME';
+  static const textEXPENSE = 'EXPENSE';
   static const textDelete = 'Delete';
   static const textDate = 'date';
 }

@@ -28,12 +28,20 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     super.initState();
   }
 
+  void getDateList() {
+    for (int i = 0; i < mAddDataModel.length; i++) {
+      if (monthController.text == mAddDataModel[i].date) {}
+    }
+  }
+
   void getSelectedMonth() async {
     dbHelper = DbHelper();
     final getMonth = await dbHelper.getFilteredByLike(month);
-    setState(() {
-      dropDownValue = getMonth.toString();
-    });
+    setState(
+      () {
+        dropDownValue = getMonth.toString();
+      },
+    );
   }
 
   Future<List<Map<String, dynamic>>> checkF() async {
@@ -50,15 +58,12 @@ class _ScreenHistoryState extends State<ScreenHistory> {
         .then((value) {
       for (int i = 0; i < mAddDataModel.length; i++) {
         String mDate = mAddDataModel[i].date!;
+
         if (dropDownValue == mDate) {
-          dbHelper.getFilteredByLike(mDate).then((value) {
-            setState(() {});
-          });
-        } else {
-          setState(() {});
-          debugPrint('In else');
+          dbHelper.getFilteredByLike(mDate);
         }
       }
+      setState(() {});
       return value;
     });
   }
