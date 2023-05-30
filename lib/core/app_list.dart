@@ -14,6 +14,20 @@ var itemMonthList = [
   AppString.textNovember,
   AppString.textDecember,
 ];
+var itemMonthListFormatted = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
 var itemSelectTypeList = [
   AppString.textIncome,

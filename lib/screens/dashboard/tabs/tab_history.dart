@@ -1,6 +1,7 @@
 import 'package:expense_tracker/core/app_color.dart';
 import 'package:expense_tracker/core/app_config.dart';
 import 'package:expense_tracker/core/app_dimens.dart';
+import 'package:expense_tracker/core/app_list.dart';
 import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/db/models/add_data_model.dart';
@@ -21,10 +22,11 @@ class _ScreenHistoryState extends State<ScreenHistory> {
   late DbHelper dbHelper;
   List<AddDataModel> mAddDataModel = [];
   String dropDownValue = '';
+  String month = '';
 
   @override
   void initState() {
-    getFilteredData();
+    print('init state');
     super.initState();
   }
 
@@ -59,7 +61,7 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     if (picked != null && picked != selectedMonth) {
       setState(() {
         selectedMonth = picked;
-        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
+        String formattedDate = DateFormat('MMM d, yyyy').format(picked);
         monthController.value =
             TextEditingValue(text: formattedDate.toString());
       });
@@ -104,6 +106,20 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     }
   }
 
+  void getSelectedMonth() async {
+    dbHelper = DbHelper();
+    final getSelectedMonth = await dbHelper.getFilteredByLike(month);
+    setState(() {
+      dropDownValue = getSelectedMonth.toString();
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> checkF() async {
+    dbHelper = DbHelper();
+    final getResultData = await dbHelper.getData();
+    return getResultData;
+  }
+
   void getFilteredData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     dbHelper = DbHelper();
@@ -113,8 +129,9 @@ class _ScreenHistoryState extends State<ScreenHistory> {
       for (int i = 0; i < mAddDataModel.length; i++) {
         String mDate = mAddDataModel[i].date!;
         print('SPLIT month --> $mDate');
-        if (monthController.text == mDate) {
-          dbHelper.getFiltered(mDate).then((value) {
+        if (dropDownValue == mDate) {
+          print('iF COND');
+          dbHelper.getFilteredByLike(mDate).then((value) {
             setState(() {});
           });
           print('monthController ${monthController.text}');
@@ -125,6 +142,7 @@ class _ScreenHistoryState extends State<ScreenHistory> {
       }
       return value;
     });
+  }
 
 /*    for (int i = 0; i < mAddDataModel.length; i++) {
       debugPrint('Date ${mAddDataModel[i].date}');
@@ -134,7 +152,6 @@ class _ScreenHistoryState extends State<ScreenHistory> {
         print('Error');
       }
     }*/
-  }
 
   /* void getFilteredData() async {
     for (int i = 0; i < mAddDataModel.length; i++) {
@@ -151,7 +168,8 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     }
   }*/
 
-  /*void getFilteredData() async {
+/*
+  void getFilteredData() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     dbHelper = DbHelper();
     mAddDataModel =
@@ -162,15 +180,16 @@ class _ScreenHistoryState extends State<ScreenHistory> {
       final monthString = DateFormat('MM').format(date);
       print('SPLIT month --> $monthString');
       if (monthController.text == mAddDataModel[i].date) {
-        */ /* dbHelper.getFilter(mAddDataModel[i].date!).then((value) {
+          dbHelper.getFilter(mAddDataModel[i].date!,sp.getString(AppConfig.textUserId)).then((value) {
           setState(() {});
-        });*/ /*
+        });
         print('monthController ${monthController.text}');
       } else {
         print('Error');
       }
     }
-  }*/
+  }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -178,17 +197,37 @@ class _ScreenHistoryState extends State<ScreenHistory> {
         body: SingleChildScrollView(
       child: Column(
         children: [
-          const SizedBox(
-            height: Dimens.margin10,
-          ),
           Padding(
             padding: const EdgeInsets.all(Dimens.margin16),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  value: dropDownValue.isNotEmpty ? dropDownValue : null,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  hint: const Text(AppString.textSelectMonth),
+                  items: itemMonthListFormatted.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      getFilteredData();
+                      dropDownValue = newValue!;
+                    });
+                  },
+                ),
+              ],
+            ),
+
+            /*Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
                   onTap: () => _selectMonth(context).then((value) {
-                    getFilteredData();
+                    checkF();
                     setState(() {});
                   }),
                   child: SizedBox(
@@ -211,10 +250,10 @@ class _ScreenHistoryState extends State<ScreenHistory> {
                           Icons.calendar_month_outlined,
                           color: AppColors.colorPrimary,
                         ),
-                        /*suffixIcon: Icon(
+                        suffixIcon: Icon(
                           Icons.arrow_drop_down,
                           color: AppColors.colorPrimary,
-                        ),*/
+                        ),
                       ),
                     ),
                   ),
@@ -241,38 +280,17 @@ class _ScreenHistoryState extends State<ScreenHistory> {
                           Icons.calendar_month,
                           color: AppColors.colorPrimary,
                         ),
-                        /* suffixIcon: Icon(
+                        suffixIcon: Icon(
                           Icons.arrow_drop_down,
                           color: AppColors.colorPrimary,
-                        ),*/
+                        ),
                       ),
                     ),
                   ),
                 ),
               ],
-            ),
+            ),*/
           ),
-          /*Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DropdownButton(
-                value: dropDownValue.isNotEmpty ? dropDownValue : null,
-                icon: const Icon(Icons.arrow_drop_down),
-                hint: const Text(AppString.textSelectMonth),
-                items: itemMonthList.map((String items) {
-                  return DropdownMenuItem(
-                    value: items,
-                    child: Text(items),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    dropDownValue = newValue!;
-                  });
-                },
-              ),
-            ],
-          ),*/
           SingleChildScrollView(
             physics: const ScrollPhysics(),
             child: ListView.builder(

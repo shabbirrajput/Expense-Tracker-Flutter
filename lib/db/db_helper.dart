@@ -101,7 +101,7 @@ class DbHelper {
   }
 
   ///GET FILTER DATA
-  Future<List<AddDataModel>?> getFilter(String date, String id) async {
+  Future<List<AddDataModel>?> getFilter(String date, String? id) async {
     var dbClient = await db;
     String sql = 'SELECT * FROM $tableAddData WHERE $addDate = ?';
     var res = await dbClient.rawQuery(sql, [date]);
@@ -110,10 +110,54 @@ class DbHelper {
     return obj.isNotEmpty ? obj : null;
   }
 
-  Future<List<Map<String, Object?>>> getFiltered(String date) async {
+  Future<List<Map<String, dynamic>>> getFiltered(String date) async {
     var dbClient = await db;
     var res = await dbClient
         .rawQuery('SELECT * FROM $tableAddData WHERE $addDate = ?', [date]);
+    return res;
+  }
+
+  ///ISO 8601 to filter date
+  Future<List<Map<String, dynamic>>> getDataFilteredByDate(
+      DateTime date) async {
+    var dbClient = await db;
+    const query = 'SELECT * FROM $tableAddData WHERE $addDate = ?';
+    final results = await dbClient.rawQuery(query, [date.toIso8601String()]);
+    return results;
+  }
+
+  ///GET DATA
+  Future<List<Map<String, dynamic>>> getData() async {
+    var dbClient = await db;
+    List<Map<String, dynamic>> result = await dbClient.query(
+      tableAddData,
+      where: '$addDate >= ? AND $addDate <= ?',
+      whereArgs: ['May 31, 2023', 'Jul 4, 2023'],
+    );
+    return result;
+  }
+
+  ///Like Query
+  Future<List<Map<String, dynamic>>> getFilteredByLike(String month) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery(
+        '''SELECT * FROM $tableAddData WHERE $addDate = 'May 30, 2023' ''');
+    return res;
+  }
+
+  Future<List<Map<String, dynamic>>> getFilteredByDate(String month) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery(
+        '''SELECT * FROM $tableAddData WHERE $addDate >= '$month' AND $addDate < '$month' ''');
+
+    return res;
+  }
+
+  Future<List<Map<String, dynamic>>> getFilteredByBard(String month) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery(
+        '''SELECT * FROM $tableAddData  WHERE DATE($addDate) BETWEEN 'May 30, 2023' AND 'May 30, 2023' ''');
+
     return res;
   }
 

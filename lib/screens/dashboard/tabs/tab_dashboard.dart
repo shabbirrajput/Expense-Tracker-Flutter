@@ -120,6 +120,48 @@ class _TabDashboardState extends State<TabDashboard> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: Dimens.margin10,
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppString.textIncome,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimens.textSize16),
+                  ),
+                  Text(
+                    AppString.textExpense,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimens.textSize16),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: Dimens.margin10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "\$ $totalIncome",
+                    style: const TextStyle(
+                        color: AppColors.colorGreen,
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimens.textSize16),
+                  ),
+                  Text(
+                    "\$ $totalExpense",
+                    style: const TextStyle(
+                        color: AppColors.colorRed,
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimens.textSize16),
+                  ),
+                ],
+              ),
               if (dataMap.isNotEmpty)
                 PieChart(
                   dataMap: dataMap,
