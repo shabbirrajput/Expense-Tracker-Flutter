@@ -6,7 +6,6 @@ import 'package:expense_tracker/core/app_string.dart';
 import 'package:expense_tracker/db/db_helper.dart';
 import 'package:expense_tracker/db/models/add_data_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenHistory extends StatefulWidget {
@@ -26,91 +25,14 @@ class _ScreenHistoryState extends State<ScreenHistory> {
 
   @override
   void initState() {
-    print('init state');
     super.initState();
-  }
-
-  ///Select Month
-  DateTime selectedMonth = DateTime.now();
-
-  Future<void> _selectMonth(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedMonth,
-      initialDatePickerMode: DatePickerMode.day,
-      firstDate: DateTime(1901, 1),
-      lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.colorPrimary, // header background color
-              onPrimary: AppColors.colorBlack, // header text color
-              onSurface: AppColors.colorGrey, // body text color
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.colorPrimary, // button text color
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != selectedMonth) {
-      setState(() {
-        selectedMonth = picked;
-        String formattedDate = DateFormat('MMM d, yyyy').format(picked);
-        monthController.value =
-            TextEditingValue(text: formattedDate.toString());
-      });
-    }
-  }
-
-  ///Select Year
-  DateTime selectedYear = DateTime.now();
-
-  Future<void> _selectYear(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedYear,
-      initialDatePickerMode: DatePickerMode.year,
-      firstDate: DateTime(1901, 1),
-      lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.colorPrimary, // header background color
-              onPrimary: AppColors.colorBlack, // header text color
-              onSurface: AppColors.colorGrey, // body text color
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.colorPrimary, // button text color
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != selectedYear) {
-      setState(() {
-        selectedYear = picked;
-        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
-        // Output: 25/05/2023
-        yearController.value = TextEditingValue(text: formattedDate.toString());
-      });
-    }
   }
 
   void getSelectedMonth() async {
     dbHelper = DbHelper();
-    final getSelectedMonth = await dbHelper.getFilteredByLike(month);
+    final getMonth = await dbHelper.getFilteredByLike(month);
     setState(() {
-      dropDownValue = getSelectedMonth.toString();
+      dropDownValue = getMonth.toString();
     });
   }
 
@@ -128,16 +50,13 @@ class _ScreenHistoryState extends State<ScreenHistory> {
         .then((value) {
       for (int i = 0; i < mAddDataModel.length; i++) {
         String mDate = mAddDataModel[i].date!;
-        print('SPLIT month --> $mDate');
         if (dropDownValue == mDate) {
-          print('iF COND');
           dbHelper.getFilteredByLike(mDate).then((value) {
             setState(() {});
           });
-          print('monthController ${monthController.text}');
         } else {
           setState(() {});
-          print('Error');
+          debugPrint('In else');
         }
       }
       return value;
@@ -434,3 +353,82 @@ class _ScreenHistoryState extends State<ScreenHistory> {
     ));
   }
 }
+
+/*
+*
+  ///Select Month
+  DateTime selectedMonth = DateTime.now();
+
+  Future<void> _selectMonth(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedMonth,
+      initialDatePickerMode: DatePickerMode.day,
+      firstDate: DateTime(1901, 1),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.colorPrimary, // header background color
+              onPrimary: AppColors.colorBlack, // header text color
+              onSurface: AppColors.colorGrey, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.colorPrimary, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != selectedMonth) {
+      setState(() {
+        selectedMonth = picked;
+        String formattedDate = DateFormat('MMM d, yyyy').format(picked);
+        monthController.value =
+            TextEditingValue(text: formattedDate.toString());
+      });
+    }
+  }
+
+  ///Select Year
+  DateTime selectedYear = DateTime.now();
+
+  Future<void> _selectYear(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedYear,
+      initialDatePickerMode: DatePickerMode.year,
+      firstDate: DateTime(1901, 1),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.colorPrimary, // header background color
+              onPrimary: AppColors.colorBlack, // header text color
+              onSurface: AppColors.colorGrey, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.colorPrimary, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != selectedYear) {
+      setState(() {
+        selectedYear = picked;
+        String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
+        // Output: 25/05/2023
+        yearController.value = TextEditingValue(text: formattedDate.toString());
+      });
+    }
+  }
+*/

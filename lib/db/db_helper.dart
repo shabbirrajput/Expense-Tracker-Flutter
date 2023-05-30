@@ -87,7 +87,6 @@ class DbHelper {
   ///Get Added Data
   Future<List<AddDataModel>> getAddedData(String? userId) async {
     var dbClient = await db;
-    print('user id ---> $userId');
     var res = await dbClient.rawQuery(
         "SELECT * FROM $tableAddData WHERE $addDataUserId = ?", [userId]);
     try {
@@ -98,6 +97,15 @@ class DbHelper {
     } catch (e) {
       return [];
     }
+  }
+
+  ///filter by gpt
+
+  Future<List<Map<String, dynamic>>> getFilters(String month) async {
+    var dbClient = await db;
+    var res = await dbClient.rawQuery(
+        '''SELECT * FROM $tableAddData WHERE $addDate('%month', $addDate) = 'May ''');
+    return res;
   }
 
   ///GET FILTER DATA
@@ -141,10 +149,11 @@ class DbHelper {
   Future<List<Map<String, dynamic>>> getFilteredByLike(String month) async {
     var dbClient = await db;
     var res = await dbClient.rawQuery(
-        '''SELECT * FROM $tableAddData WHERE $addDate = 'May 30, 2023' ''');
+        '''SELECT * FROM $tableAddData WHERE $addDate LIKE '$month%' ''');
     return res;
   }
 
+  ///Get Filter By Like
   Future<List<Map<String, dynamic>>> getFilteredByDate(String month) async {
     var dbClient = await db;
     var res = await dbClient.rawQuery(
@@ -202,6 +211,7 @@ class DbHelper {
     return totalAmount;
   }
 
+/*
   Future<int> calculateTotal() async {
     var dbClient = await db;
     var result =
@@ -210,6 +220,7 @@ class DbHelper {
     print(result.toList());
     return sum;
   }
+*/
 
   ///SnapShot Future logic
 /*
